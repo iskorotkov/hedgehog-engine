@@ -1,0 +1,42 @@
+{
+  "name": "cg-course",
+  "version": "0.1.0",
+  "description": "Computer Graphics course",
+  "main": "index.js",
+  "scripts": {
+    "ts build": "tsc -b",
+    "ts watch": "tsc -w",
+    "test": "echo \\\"Error: no tests specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iskorotkov/cg-course.git"
+  },
+  "keywords": [
+    "typescript",
+    "javascript",
+    "opengl",
+    "webgl"
+  ],
+  "author": "iskorotkov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iskorotkov/cg-course/issues"
+  },
+  "homepage": "https://github.com/iskorotkov/cg-course#readme",
+  "dependencies": {
+    "typescript": "^4.1.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.14.0",
+    "@typescript-eslint/parser": "^4.14.0",
+    "es": "^0.7.3",
+    "eslint": "^7.12.1",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "stylelint": "^13.8.0",
+    "stylelint-config-sass-guidelines": "^7.1.0"
+  }
+}
