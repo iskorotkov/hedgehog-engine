@@ -2,7 +2,7 @@ import { init } from './init'
 import { Program2D } from './programs/program2d'
 import { planeShader } from './shaders/vertex/planeShader'
 import { keepColorShader } from './shaders/fragment/keepColorShader'
-import { Triangle } from './models/triangle'
+import { TriangleModel } from './models/triangleModel'
 import { clear, draw } from './graphics'
 
 export function run () {
@@ -18,7 +18,7 @@ export function run () {
   const compiled = program.compile(gl)
 
   console.log('Creating model')
-  const model = new Triangle()
+  const model = new TriangleModel()
   const prepared = model.prepare(gl)
 
   console.log('Drawing')
