@@ -1,11 +1,4 @@
-function getCanvas () {
-  const canvas = document.getElementById('canvas')
-  if (!canvas) {
-    console.error('Couldn\'t find canvas')
-    return
-  }
+import { run } from './engine/run'
 
-  canvas.innerHTML = 'Hello there!'
-}
-
-getCanvas()
+console.log('Starting WebGL app')
+run()
