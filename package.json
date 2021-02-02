@@ -4,9 +4,10 @@
   "description": "Computer Graphics course",
   "main": "index.js",
   "scripts": {
-    "ts build": "tsc -b",
-    "ts watch": "tsc -w",
-    "test": "echo \\\"Error: no tests specified\\\" && exit 1"
+    "tsc build": "yarn tsc -b",
+    "tsc watch": "yarn tsc -w",
+    "sass compile": "yarn sass styles/index.scss:./dist/index.css",
+    "sass watch": "yarn sass styles/index.scss:./dist/index.css --watch"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,6 @@
   },
   "homepage": "https://github.com/iskorotkov/cg-course#readme",
   "dependencies": {
-    "typescript": "^4.1.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.14.0",
@@ -36,7 +36,9 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
+    "sass": "^1.32.6",
     "stylelint": "^13.8.0",
-    "stylelint-config-sass-guidelines": "^7.1.0"
+    "stylelint-config-sass-guidelines": "^7.1.0",
+    "typescript": "^4.1.3"
   }
 }
