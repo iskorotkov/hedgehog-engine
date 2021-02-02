@@ -3,7 +3,7 @@ import { Program2D } from './programs/program2d'
 import { planeShader } from './shaders/vertex/planeShader'
 import { keepColorShader } from './shaders/fragment/keepColorShader'
 import { clear, draw } from './graphics'
-import { triangleModel } from './models/triangleModel'
+import { rectangleModel } from './models/rectangleModel'
 
 export function run () {
   console.log('Initializing WebGL rendering context')
@@ -18,7 +18,7 @@ export function run () {
   const compiled = program.compile(gl)
 
   console.log('Creating model')
-  const prepared = triangleModel.prepare(gl)
+  const prepared = rectangleModel.prepare(gl)
 
   console.log('Drawing')
   clear(gl)
