@@ -18,6 +18,8 @@ yarn run 'tsc build'
 yarn run 'sass compile'
 ```
 
+Open `index.html` file in the browser.
+
 ## Features
 
 - vertex and fragment shader compilation
