@@ -36,8 +36,8 @@ export class Engine {
     }
 
     const devicePixelRatio = window.devicePixelRatio || 1
-    canvas.width = canvas.clientWidth * devicePixelRatio
-    canvas.height = canvas.clientHeight * devicePixelRatio
+    canvas.width *= devicePixelRatio
+    canvas.height *= devicePixelRatio
 
     console.log('Initializing WebGL rendering context')
     const gl = canvas.getContext('webgl')
