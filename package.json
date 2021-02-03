@@ -1,8 +1,8 @@
 {
-  "name": "cg-course",
+  "name": "hedgehog-engine",
   "version": "0.1.0",
-  "description": "Computer Graphics course",
-  "main": "index.js",
+  "description": "WebGL-based graphics engine",
+  "main": "src/index.ts",
   "scripts": {
     "tsc build": "yarn tsc -b",
     "tsc watch": "yarn tsc -w",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iskorotkov/cg-course.git"
+    "url": "git+https://github.com/iskorotkov/hedgehog-engine.git"
   },
   "keywords": [
     "typescript",
@@ -22,9 +22,9 @@
   "author": "iskorotkov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/iskorotkov/cg-course/issues"
+    "url": "https://github.com/iskorotkov/hedgehog-engine/issues"
   },
-  "homepage": "https://github.com/iskorotkov/cg-course#readme",
+  "homepage": "https://github.com/iskorotkov/hedgehog-engine#readme",
   "dependencies": {
   },
   "devDependencies": {
