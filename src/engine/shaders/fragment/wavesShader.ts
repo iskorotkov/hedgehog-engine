@@ -1,6 +1,17 @@
 import { FragmentShader } from './fragmentShader'
 import { stringify } from '../functions/stringify'
 
+interface WavesShaderParams {
+  lines?: number
+  density?: number
+  height?: number
+  sharp?: boolean
+  balance?: number
+  angle?: number
+  horizontalOffset?: number
+  verticalOffset?: number
+}
+
 /**
  * Returns a fragment shader with a horizontal waves effect.
  * @param lines Number of horizontal lines.
@@ -12,18 +23,16 @@ import { stringify } from '../functions/stringify'
  * @param horizontalOffset Horizontal offset of the shader effect.
  * @param verticalOffset Vertical offset of the shader effect.
  */
-export function wavesShader (lines: number, density: number, height: number, sharp: boolean, balance: number,
-  angle: number, horizontalOffset: number = 0, verticalOffset: number = 0): FragmentShader {
-  const wavesNormal = `(v_color.x * cos(${stringify(angle)}) + v_color.y * sin(${stringify(angle)}))`
-  const wavesArg = `2.0 * 3.14 * ${wavesNormal} * ${stringify(density)}`
-  const wavesEffect = `(sin(${wavesArg}) * ${stringify(height)} - ${stringify(horizontalOffset)})`
-
-  const distance = `(v_color.x * sin(${stringify(angle)}) - v_color.y * cos(${stringify(angle)}))`
-  const linesArg = `2.0 * 3.14 * ${distance} * ${stringify(lines)} - ${stringify(verticalOffset)} + ${wavesEffect}`
-  const scaledLines = `(sin(${linesArg}) + 1.0) / 2.0 + ${stringify(balance - 0.5)}`
-
-  const sharpScaledLines = sharp ? `step(0.5, ${scaledLines})` : scaledLines
-
+export function wavesShader ({
+  lines = 1,
+  density = 1,
+  height = 1,
+  sharp = false,
+  balance = 0.5,
+  angle = 0,
+  horizontalOffset = 0,
+  verticalOffset = 0
+}: WavesShaderParams): FragmentShader {
   return new FragmentShader(`
 precision highp float;
 precision lowp int;
@@ -32,7 +41,17 @@ varying vec3 v_color;
 
 void main()
 {
-    gl_FragColor = vec4(${sharpScaledLines}, 0.0, 0.0, 1.0);
+    // Waves
+    float wavesNormal = v_color.x * cos(${stringify(angle)}) + v_color.y * sin(${stringify(angle)});
+    float wavesArg = 2.0 * 3.14 * wavesNormal * ${stringify(density)};
+    float wavesEffect = sin(wavesArg) * ${stringify(height)} - ${stringify(horizontalOffset)};
+    
+    // Parallel lines
+    float distance = v_color.x * sin(${stringify(angle)}) - v_color.y * cos(${stringify(angle)});
+    float linesArg = 2.0 * 3.14 * distance * ${stringify(lines)} - ${stringify(verticalOffset)} + wavesEffect;
+    float scaledLines = (sin(linesArg) + 1.0) / 2.0 + ${stringify(balance)} - 0.5;
+    
+    gl_FragColor = vec4(${sharp ? 'step(0.5, scaledLines)' : 'scaledLines'}, 0.0, 0.0, 1.0);
 }
 `)
 }
