@@ -1,9 +1,9 @@
 import { init } from './init'
 import { Program2D } from './programs/program2d'
 import { planeShader } from './shaders/vertex/planeShader'
-import { keepColorShader } from './shaders/fragment/keepColorShader'
 import { clear, draw } from './graphics'
 import { rectangleModel } from './models/rectangleModel'
+import { horizontalWavesShader } from './shaders/fragment/horizontalWavesShader'
 
 export function run () {
   console.log('Initializing WebGL rendering context')
@@ -11,7 +11,7 @@ export function run () {
 
   console.log('Compile shaders')
   const vertexShader = planeShader.compile(gl)
-  const fragmentShader = keepColorShader.compile(gl)
+  const fragmentShader = horizontalWavesShader(10, 5, 3).compile(gl)
 
   console.log('Compile shader program')
   const program = new Program2D(vertexShader, fragmentShader)
