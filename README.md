@@ -1,5 +1,7 @@
 # Hedgehog Engine
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/7ec629b6-69d6-49a5-84d0-529269eb3856/deploy-status)](https://app.netlify.com/sites/hedgehog-engine/deploys)
+
 WebGL-based graphics engine.
 
 - [Hedgehog Engine](#hedgehog-engine)
