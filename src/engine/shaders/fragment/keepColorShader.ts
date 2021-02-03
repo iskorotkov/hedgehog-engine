@@ -1,5 +1,8 @@
 import { FragmentShader } from './fragmentShader'
 
+/**
+ * Fragment shader that preserves original color.
+ */
 export const keepColorShader = new FragmentShader(`
 precision highp float;
 precision lowp int;

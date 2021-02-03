@@ -4,9 +4,22 @@ import { VertexShader } from './shaders/vertex/vertexShader'
 import { FragmentShader } from './shaders/fragment/fragmentShader'
 import { Model } from './models/model'
 
+/**
+ * Provides methods to draw a scene.
+ */
 export class InitializedEngine {
+  /**
+   * Returns an initialized engine for working with a provided WebGL context.
+   * @param context WebGL context to work with.
+   */
   constructor (private readonly context: WebGLRenderingContext) {}
 
+  /**
+   * Displays model using vertex and fragment shaders.
+   * @param model Model to show.
+   * @param vertex Vertex shader to use.
+   * @param fragment Fragment shader to use.
+   */
   run (model: Model, vertex: VertexShader, fragment: FragmentShader) {
     console.log('Compiling shaders')
     const vertexShader = vertex.compile(this.context)
@@ -25,9 +38,19 @@ export class InitializedEngine {
   }
 }
 
+/**
+ * Provides methods to initialize WebGL engine.
+ */
 export class Engine {
+  /**
+   * Returns an engine associated with a HTML canvas element.
+   * @param id ID of the HTML canvas element to attach to.
+   */
   constructor (private readonly id: string) {}
 
+  /**
+   * Returns initialized WebGL engine.
+   */
   init (): InitializedEngine {
     console.log('Getting canvas')
     const canvas = document.getElementById(this.id) as HTMLCanvasElement

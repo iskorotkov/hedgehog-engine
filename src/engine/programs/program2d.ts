@@ -3,10 +3,24 @@ import { CompiledVertexShader } from '../shaders/vertex/vertexShader'
 import { CompiledFragmentShader } from '../shaders/fragment/fragmentShader'
 import { PreparedModel } from '../models/model'
 
+/**
+ * Already compiled shader program for 2D models.
+ */
 export class CompiledProgram2D implements CompiledProgram {
+  /**
+   * Returns already compiled shader program for 2D models.
+   * @param program WebGL program.
+   * @param position Position buffer index.
+   * @param color Color buffer index.
+   */
   constructor (private readonly program: WebGLProgram, private readonly position: number, private readonly color: number) {
   }
 
+  /**
+   * Draw model using provided WebGL context.
+   * @param gl WebGL context.
+   * @param model Model to draw.
+   */
   draw (gl: WebGLRenderingContext, model: PreparedModel) {
     gl.useProgram(this.program)
 
@@ -20,9 +34,21 @@ export class CompiledProgram2D implements CompiledProgram {
   }
 }
 
+/**
+ * Shader program for 2D models ready to be compiled.
+ */
 export class Program2D implements Program {
+  /**
+   * Returns shader program for 2D models ready to be compiled.
+   * @param vertex Vertex shader to use.
+   * @param fragment Fragment shader to use.
+   */
   constructor (private readonly vertex: CompiledVertexShader, private readonly fragment: CompiledFragmentShader) {}
 
+  /**
+   * Returns already compiled shader program for 2D models.
+   * @param gl WebGL context.
+   */
   compile (gl: WebGLRenderingContext): CompiledProgram {
     const shaderProgram = gl.createProgram()
     if (!shaderProgram) {

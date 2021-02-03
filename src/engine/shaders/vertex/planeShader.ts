@@ -1,5 +1,8 @@
 import { VertexShader } from './vertexShader'
 
+/**
+ * Vertex shader that displays vertices on a plane.
+ */
 export const planeShader = new VertexShader(`
 precision highp float;
 precision lowp int;

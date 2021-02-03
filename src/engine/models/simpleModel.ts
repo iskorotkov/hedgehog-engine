@@ -1,12 +1,33 @@
 import { Model } from './model'
 
+/**
+ * Simple model prepared to be drawn.
+ */
 export class PreparedSimpleModel {
+  /**
+   * Returns simple model prepared to be drawn.
+   * @param vertices Vertices buffer.
+   * @param indices Indices buffer.
+   * @param indexCount Number of indices.
+   */
   constructor (public readonly vertices: WebGLBuffer, public readonly indices: WebGLBuffer, public readonly indexCount: number) {}
 }
 
+/**
+ * Simple model with a single vertices buffer and a single indices buffer.
+ */
 export class SimpleModel implements Model {
+  /**
+   * Returns a simple model with a single vertices buffer and a single indices buffer.
+   * @param vertices Vertices of the model.
+   * @param indices Indices of the model.
+   */
   constructor (private readonly vertices: number[], private readonly indices: number[]) {}
 
+  /**
+   * Returns simple model prepared to be drawn.
+   * @param gl WebGL context.
+   */
   prepare (gl: WebGLRenderingContext): PreparedSimpleModel {
     const verticesBuffer = gl.createBuffer()
     if (!verticesBuffer) {
