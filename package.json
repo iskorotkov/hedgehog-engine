@@ -8,7 +8,7 @@
     "tsc-watch": "yarn tsc -w",
     "sass-compile": "yarn sass ./styles/index.scss:dist/index.css",
     "sass-watch": "yarn sass ./styles/index.scss:dist/index.css --watch",
-    "publish": "yarn && yarn run tsc-build && yarn run sass-compile && rm -rf ./publish && mkdir ./publish && cp -r ./dist ./publish/dist && cp -r ./lib ./publish/lib && cp -r ./resources ./publish/resources && cp index.html ./publish/index.html"
+    "publish": "yarn install --immutable && yarn run tsc-build && yarn run sass-compile && rm -rf ./publish && mkdir ./publish && cp -r ./dist ./publish/dist && cp -r ./lib ./publish/lib && cp -r ./resources ./publish/resources && cp index.html ./publish/index.html"
   },
   "repository": {
     "type": "git",
