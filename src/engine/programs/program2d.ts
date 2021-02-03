@@ -4,7 +4,7 @@ import { CompiledFragmentShader } from '../shaders/fragment/fragmentShader'
 import { PreparedModel } from '../models/model'
 
 export class CompiledProgram2D implements CompiledProgram {
-  constructor (private program: WebGLProgram, private position: number, private color: number) {
+  constructor (private readonly program: WebGLProgram, private readonly position: number, private readonly color: number) {
   }
 
   draw (gl: WebGLRenderingContext, model: PreparedModel) {
@@ -21,7 +21,7 @@ export class CompiledProgram2D implements CompiledProgram {
 }
 
 export class Program2D implements Program {
-  constructor (private vertex: CompiledVertexShader, private fragment: CompiledFragmentShader) {}
+  constructor (private readonly vertex: CompiledVertexShader, private readonly fragment: CompiledFragmentShader) {}
 
   compile (gl: WebGLRenderingContext): CompiledProgram {
     const shaderProgram = gl.createProgram()

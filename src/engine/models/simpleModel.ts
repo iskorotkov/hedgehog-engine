@@ -1,11 +1,11 @@
 import { Model } from './model'
 
 export class PreparedSimpleModel {
-  constructor (public vertices: WebGLBuffer, public indices: WebGLBuffer, public indexCount: number) {}
+  constructor (public readonly vertices: WebGLBuffer, public readonly indices: WebGLBuffer, public readonly indexCount: number) {}
 }
 
 export class SimpleModel implements Model {
-  constructor (private vertices: number[], private indices: number[]) {}
+  constructor (private readonly vertices: number[], private readonly indices: number[]) {}
 
   prepare (gl: WebGLRenderingContext): PreparedSimpleModel {
     const verticesBuffer = gl.createBuffer()

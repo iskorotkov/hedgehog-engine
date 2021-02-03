@@ -1,9 +1,9 @@
 export class CompiledFragmentShader {
-  constructor (public shader: WebGLShader) {}
+  constructor (public readonly shader: WebGLShader) {}
 }
 
 export class FragmentShader {
-  constructor (private text: string) {
+  constructor (private readonly text: string) {
   }
 
   compile (gl: WebGLRenderingContext): CompiledFragmentShader {

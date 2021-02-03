@@ -1,9 +1,9 @@
 export class CompiledVertexShader {
-  constructor (public shader: WebGLShader) {}
+  constructor (public readonly shader: WebGLShader) {}
 }
 
 export class VertexShader {
-  constructor (private text: string) {
+  constructor (private readonly text: string) {
   }
 
   compile (gl: WebGLRenderingContext): CompiledVertexShader {

@@ -26,7 +26,7 @@ export class InitializedEngine {
 }
 
 export class Engine {
-  constructor (private id: string) {}
+  constructor (private readonly id: string) {}
 
   init (): InitializedEngine {
     console.log('Getting canvas')
