@@ -1,5 +1,6 @@
 import { FragmentShader } from './fragmentShader'
 import { stringify } from '../functions/stringify'
+import { Angle, radians } from '../../../math/angle'
 
 interface WavesShaderParams {
   lines?: number
@@ -7,7 +8,7 @@ interface WavesShaderParams {
   height?: number
   sharp?: boolean
   balance?: number
-  angle?: number
+  angle?: Angle
   horizontalOffset?: number
   verticalOffset?: number
 }
@@ -29,7 +30,7 @@ export function wavesShader ({
   height = 1,
   sharp = false,
   balance = 0.5,
-  angle = 0,
+  angle = radians(0),
   horizontalOffset = 0,
   verticalOffset = 0
 }: WavesShaderParams): FragmentShader {
@@ -42,12 +43,12 @@ varying vec3 v_color;
 void main()
 {
     // Waves
-    float wavesNormal = v_color.x * cos(${stringify(angle)}) + v_color.y * sin(${stringify(angle)});
+    float wavesNormal = v_color.x * cos(${stringify(angle?.radians)}) + v_color.y * sin(${stringify(angle?.radians)});
     float wavesArg = 2.0 * 3.14 * wavesNormal * ${stringify(density)};
     float wavesEffect = sin(wavesArg) * ${stringify(height)} - ${stringify(horizontalOffset)};
     
     // Parallel lines
-    float distance = v_color.x * sin(${stringify(angle)}) - v_color.y * cos(${stringify(angle)});
+    float distance = v_color.x * sin(${stringify(angle?.radians)}) - v_color.y * cos(${stringify(angle?.radians)});
     float linesArg = 2.0 * 3.14 * distance * ${stringify(lines)} - ${stringify(verticalOffset)} + wavesEffect;
     float scaledLines = (sin(linesArg) + 1.0) / 2.0 + ${stringify(balance)} - 0.5;
     
