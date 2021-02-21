@@ -4,6 +4,7 @@
   "description": "WebGL-based graphics engine",
   "main": "src/index.ts",
   "scripts": {
+    "test": "mocha -r esm -r ts-node/register \"src/math/**\"",
     "tsc-build": "yarn tsc -b",
     "tsc-watch": "yarn tsc -w",
     "sass-compile": "yarn sass ./styles/index.scss:dist/index.css",
@@ -26,20 +27,25 @@
     "url": "https://github.com/iskorotkov/hedgehog-engine/issues"
   },
   "homepage": "https://github.com/iskorotkov/hedgehog-engine#readme",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@types/chai": "^4.2.15",
+    "@types/mocha": "^8.2.1",
     "@typescript-eslint/eslint-plugin": "^4.14.0",
     "@typescript-eslint/parser": "^4.14.0",
+    "chai": "^4.3.0",
     "es": "^0.7.3",
     "eslint": "^7.12.1",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
+    "esm": "^3.2.25",
+    "mocha": "^8.3.0",
     "sass": "^1.32.6",
     "stylelint": "^13.8.0",
     "stylelint-config-sass-guidelines": "^7.1.0",
+    "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   }
 }
