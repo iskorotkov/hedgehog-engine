@@ -1,8 +1,8 @@
 import { Program2D } from './programs/program2d'
-import { clear, draw } from './modules/graphics'
 import { VertexShader } from './shaders/vertex/vertexShader'
 import { FragmentShader } from './shaders/fragment/fragmentShader'
 import { Model } from './models/model'
+import { Renderer } from './renderer/renderer'
 
 /**
  * Provides methods to draw a scene.
@@ -11,8 +11,9 @@ export class InitializedEngine {
   /**
    * Returns an initialized engine for working with a provided WebGL context.
    * @param context WebGL context to work with.
+   * @param renderer Graphics renderer to use.
    */
-  constructor (private readonly context: WebGLRenderingContext) {}
+  constructor (private readonly context: WebGLRenderingContext, private readonly renderer: Renderer) {}
 
   /**
    * Displays model using vertex and fragment shaders.
@@ -27,14 +28,14 @@ export class InitializedEngine {
 
     console.log('Compiling shader program')
     const program = new Program2D(vertexShader, fragmentShader)
-    const compiled = program.compile(this.context)
+    const compiledProgram = program.compile(this.context)
 
     console.log('Creating model')
-    const prepared = model.prepare(this.context)
+    const preparedModel = model.prepare(this.context)
 
     console.log('Drawing')
-    clear(this.context)
-    draw(this.context, compiled, prepared)
+    this.renderer.clear(this.context)
+    this.renderer.draw(this.context, preparedModel, compiledProgram)
   }
 }
 
@@ -45,8 +46,9 @@ export class Engine {
   /**
    * Returns an engine associated with a HTML canvas element.
    * @param id ID of the HTML canvas element to attach to.
+   * @param renderer Graphics renderer to use.
    */
-  constructor (private readonly id: string) {}
+  constructor (private readonly id: string, private readonly renderer: Renderer) {}
 
   /**
    * Returns initialized WebGL engine.
@@ -70,6 +72,6 @@ export class Engine {
 
     console.log('Initializing WebGL viewport')
     gl.viewport(0, 0, canvas.width, canvas.height)
-    return new InitializedEngine(gl)
+    return new InitializedEngine(gl, this.renderer)
   }
 }
