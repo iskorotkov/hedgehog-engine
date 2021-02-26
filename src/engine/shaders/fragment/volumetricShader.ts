@@ -28,16 +28,16 @@ varying vec3 v_specular_color;
 void main()
 {
     vec3 normals = normalize(v_normal);
-    vec3 E = vec3(0, 0, 0);
+    vec3 E = vec3(0.0, 0.0, 0.0);
     vec3 lightDirection = normalize(v_position - ${light});
     
     float diffuse = max(dot(normals, lightDirection), 0.01);
     
     vec3 e = normalize(E - v_position);
     vec3 halfVector = normalize(e - lightDirection);
-    float specular = pow(max(dot(normals, halfVector), 0), ${stringify(specular)});
+    float specular = pow(max(dot(normals, halfVector), 0.0), ${stringify(specular)});
     
-    gl_FragColor = vec4(v_diffuse_color * diffuse + v_specular_color * specular, 1);
+    gl_FragColor = vec4(v_diffuse_color * diffuse + v_specular_color * specular, 1.0);
 }
 `.trim())
 }
