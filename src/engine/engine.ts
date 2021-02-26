@@ -1,8 +1,8 @@
-import { Program2D } from './programs/program2d'
 import { VertexShader } from './shaders/vertex/vertexShader'
 import { FragmentShader } from './shaders/fragment/fragmentShader'
 import { Model } from './models/model'
 import { Renderer } from './renderer/renderer'
+import { Program } from './programs/program'
 
 /**
  * Provides methods to draw a scene.
@@ -18,17 +18,17 @@ export class InitializedEngine {
   /**
    * Displays model using vertex and fragment shaders.
    * @param model Model to show.
+   * @param program Program to use.
    * @param vertex Vertex shader to use.
    * @param fragment Fragment shader to use.
    */
-  run (model: Model, vertex: VertexShader, fragment: FragmentShader) {
+  run (model: Model, program: Program, vertex: VertexShader, fragment: FragmentShader) {
     console.log('Compiling shaders')
     const vertexShader = vertex.compile(this.context)
     const fragmentShader = fragment.compile(this.context)
 
     console.log('Compiling shader program')
-    const program = new Program2D(vertexShader, fragmentShader)
-    const compiledProgram = program.compile(this.context)
+    const compiledProgram = program.compile(this.context, vertexShader, fragmentShader)
 
     console.log('Creating model')
     const preparedModel = model.prepare(this.context)

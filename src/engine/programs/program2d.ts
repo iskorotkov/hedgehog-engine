@@ -39,24 +39,19 @@ export class CompiledProgram2D implements CompiledProgram {
  */
 export class Program2D implements Program {
   /**
-   * Returns shader program for 2D models ready to be compiled.
+   * Returns already compiled shader program for 2D models.
+   * @param gl WebGL context.
    * @param vertex Vertex shader to use.
    * @param fragment Fragment shader to use.
    */
-  constructor (private readonly vertex: CompiledVertexShader, private readonly fragment: CompiledFragmentShader) {}
-
-  /**
-   * Returns already compiled shader program for 2D models.
-   * @param gl WebGL context.
-   */
-  compile (gl: WebGLRenderingContext): CompiledProgram {
+  compile (gl: WebGLRenderingContext, vertex: CompiledVertexShader, fragment: CompiledFragmentShader): CompiledProgram {
     const shaderProgram = gl.createProgram()
     if (!shaderProgram) {
       throw new Error('couldn\'t create shader program')
     }
 
-    gl.attachShader(shaderProgram, this.vertex.shader)
-    gl.attachShader(shaderProgram, this.fragment.shader)
+    gl.attachShader(shaderProgram, vertex.shader)
+    gl.attachShader(shaderProgram, fragment.shader)
     gl.linkProgram(shaderProgram)
 
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
