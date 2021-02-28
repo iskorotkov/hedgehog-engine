@@ -6,11 +6,11 @@ import { PreparedActor } from '../world/actor'
 import { Matrix4 } from '../../math/matrix'
 
 /**
- * Already compiled shader program for 2D models with colors.
+ * Already compiled shader program for 2D models with specular color.
  */
 export class CompiledProgram2DSpecular implements CompiledProgram {
   /**
-   * Returns already compiled shader program for 2D models with colors.
+   * Returns already compiled shader program for 2D models with specular color.
    * @param program WebGL program.
    * @param position Position buffer index.
    * @param diffuseColor Diffuse color buffer index.
@@ -21,9 +21,9 @@ export class CompiledProgram2DSpecular implements CompiledProgram {
     private readonly position: number,
     private readonly diffuseColor: number,
     private readonly specularColor: number,
-    public readonly mvp: WebGLUniformLocation,
-    public readonly mv: WebGLUniformLocation,
-    public readonly n: WebGLUniformLocation
+    public readonly mvp: WebGLUniformLocation | null,
+    public readonly mv: WebGLUniformLocation | null,
+    public readonly n: WebGLUniformLocation | null
   ) {
   }
 
@@ -56,9 +56,17 @@ export class CompiledProgram2DSpecular implements CompiledProgram {
     gl.bindBuffer(gl.ARRAY_BUFFER, actor.model.vertices)
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, actor.model.indices)
 
-    gl.vertexAttribPointer(this.position, 2, gl.FLOAT, false, 8 * 4, 0)
-    gl.vertexAttribPointer(this.diffuseColor, 3, gl.FLOAT, false, 8 * 4, 2 * 4)
-    gl.vertexAttribPointer(this.specularColor, 3, gl.FLOAT, false, 8 * 4, 5 * 4)
+    if (this.position >= 0) {
+      gl.vertexAttribPointer(this.position, 2, gl.FLOAT, false, 8 * 4, 0)
+    }
+
+    if (this.diffuseColor >= 0) {
+      gl.vertexAttribPointer(this.diffuseColor, 3, gl.FLOAT, false, 8 * 4, 2 * 4)
+    }
+
+    if (this.specularColor >= 0) {
+      gl.vertexAttribPointer(this.specularColor, 3, gl.FLOAT, false, 8 * 4, 5 * 4)
+    }
 
     gl.uniformMatrix4fv(this.mv, false, mv.values)
     gl.uniformMatrix4fv(this.mvp, false, mvp.values)
@@ -69,11 +77,11 @@ export class CompiledProgram2DSpecular implements CompiledProgram {
 }
 
 /**
- * Shader program for 2D models with colors ready to be compiled.
+ * Shader program for 2D models with specular color ready to be compiled.
  */
 export class Program2DSpecular implements Program {
   /**
-   * Returns already compiled shader program for 2D models with colors.
+   * Returns already compiled shader program for 2D models with specular color.
    * @param gl WebGL context.
    * @param vertex Vertex shader to use.
    * @param fragment Fragment shader to use.
@@ -99,13 +107,18 @@ export class Program2DSpecular implements Program {
     const mvp = gl.getUniformLocation(shaderProgram, 'u_mvp')
     const mv = gl.getUniformLocation(shaderProgram, 'u_mv')
     const n = gl.getUniformLocation(shaderProgram, 'u_n')
-    if (!mvp || !mv || !n) {
-      throw new Error('Couldn\'t get uniform locations')
+
+    if (position >= 0) {
+      gl.enableVertexAttribArray(position)
     }
 
-    gl.enableVertexAttribArray(position)
-    gl.enableVertexAttribArray(diffuseColor)
-    gl.enableVertexAttribArray(specularColor)
+    if (diffuseColor >= 0) {
+      gl.enableVertexAttribArray(diffuseColor)
+    }
+
+    if (specularColor > 0) {
+      gl.enableVertexAttribArray(specularColor)
+    }
 
     return new CompiledProgram2DSpecular(shaderProgram, position, diffuseColor, specularColor, mvp, mv, n)
   }
