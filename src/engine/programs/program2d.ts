@@ -65,7 +65,7 @@ export class Program2D implements Program {
     }
 
     const position = gl.getAttribLocation(shaderProgram, 'a_position')
-    const color = gl.getAttribLocation(shaderProgram, 'a_color')
+    const color = gl.getAttribLocation(shaderProgram, 'v_diffuse_color')
 
     gl.enableVertexAttribArray(position)
     gl.enableVertexAttribArray(color)
