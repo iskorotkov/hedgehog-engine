@@ -47,8 +47,8 @@ export class CompiledProgram3D implements CompiledProgram {
 
   drawActor (gl: WebGLRenderingContext, actor: PreparedActor, v: Matrix4, p: Matrix4) {
     const m = actor.transform.asMatrix()
-    const mv = m.multiply(v)
-    const mvp = mv.multiply(p)
+    const mv = v.multiply(m)
+    const mvp = p.multiply(mv)
     const n = mv.toMatrix3().inverse().transpose()
 
     console.info('matrices:', {
@@ -77,9 +77,9 @@ export class CompiledProgram3D implements CompiledProgram {
       gl.vertexAttribPointer(this.specularColor, 3, gl.FLOAT, false, 9 * 4, 6 * 4)
     }
 
-    gl.uniformMatrix4fv(this.mv, false, mv.values)
-    gl.uniformMatrix4fv(this.mvp, false, mvp.values)
-    gl.uniformMatrix3fv(this.n, false, n.values)
+    gl.uniformMatrix4fv(this.mv, false, mv.transpose().values)
+    gl.uniformMatrix4fv(this.mvp, false, mvp.transpose().values)
+    gl.uniformMatrix3fv(this.n, false, n.transpose().values)
 
     gl.drawElements(gl.TRIANGLES, actor.model.indexCount, gl.UNSIGNED_SHORT, 0)
   }

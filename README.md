@@ -12,6 +12,7 @@ WebGL-based rendering engine.
   - [Features](#features)
   - [Tech stack](#tech-stack)
   - [Linters](#linters)
+  - [Useful links](#useful-links)
 
 ## How to run
 
@@ -51,3 +52,8 @@ Linters used:
 - Stylelint
 
 Use linters before committing to this repo.
+
+## Useful links
+
+- [WebGL example - 3D cube](https://github.com/mdn/webgl-examples/blob/gh-pages/tutorial/sample5/webgl-demo.js)
+- [OpenGL matrices](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/)
