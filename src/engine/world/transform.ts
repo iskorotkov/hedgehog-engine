@@ -6,26 +6,14 @@ import { Vector3 } from '../../math/vector'
  * Transform values of the actor.
  */
 export class Transform {
-  constructor (private pos: Vector3, private rot: Vector3, private sc: Vector3) {}
-
-  getPosition (): Vector3 {
-    return this.pos
-  }
-
-  getRotation (): Vector3 {
-    return this.rot
-  }
-
-  getScale (): Vector3 {
-    return this.sc
-  }
+  constructor (public position: Vector3, public rotation: Vector3, public scale: Vector3) {}
 
   asMatrix (): Matrix4 {
-    return translate(this.pos)
-      .multiply(rotate(new Vector3(1, 0, 0), degrees(this.rot.x)))
-      .multiply(rotate(new Vector3(0, 1, 0), degrees(this.rot.y)))
-      .multiply(rotate(new Vector3(0, 0, 1), degrees(this.rot.z)))
-      .multiply(scale(this.sc))
+    return translate(this.position)
+      .multiply(rotate(new Vector3(1, 0, 0), degrees(this.rotation.x)))
+      .multiply(rotate(new Vector3(0, 1, 0), degrees(this.rotation.y)))
+      .multiply(rotate(new Vector3(0, 0, 1), degrees(this.rotation.z)))
+      .multiply(scale(this.scale))
   }
 
   /**
@@ -33,7 +21,7 @@ export class Transform {
    * @param delta Movement vector.
    */
   move (delta: Vector3): void {
-    this.pos = this.pos.add(delta)
+    this.position = this.position.add(delta)
   }
 
   /**
@@ -41,14 +29,14 @@ export class Transform {
    * @param delta Euler rotation.
    */
   rotate (delta: Vector3): void {
-    this.rot = this.rot.add(delta)
+    this.rotation = this.rotation.add(delta)
   }
 
   /**
    * Change transform scale by specified multiplier vector.
    * @param multiplier Scale multiplier.
    */
-  scale (multiplier: Vector3): void {
-    this.sc = this.sc.add(multiplier)
+  resize (multiplier: Vector3): void {
+    this.scale = this.scale.add(multiplier)
   }
 }
