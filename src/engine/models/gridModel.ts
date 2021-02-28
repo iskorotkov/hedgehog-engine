@@ -1,10 +1,30 @@
 import { Vector3 } from '../../math/vector'
-import { SimpleModel } from './simpleModel'
+import { VolumetricModel } from './volumetricModel'
 
-export function gridModel (
-  { rows, cols }: { rows: number, cols: number },
-  { diffuse, specular }: { diffuse: Vector3, specular: Vector3 }
-) {
+/**
+ * Dimensions for 2D grid.
+ */
+export interface Dimensions {
+  rows: number,
+  cols: number
+}
+
+/**
+ * Set of colors for a model.
+ */
+export interface Colors {
+  diffuse: Vector3,
+  specular: Vector3
+}
+
+/**
+ * Creates a 2D grid.
+ * @param transform Grid transform.
+ * @param dimensions Grid dimensions.
+ * @param colors Grid colors.
+ * @returns Returns a model representing a 2D grid.
+ */
+export function gridModel ({ rows, cols }: Dimensions, { diffuse, specular }: Colors): VolumetricModel {
   if (rows <= 1 || cols <= 1) {
     throw new Error(`can't create grid model with ${rows} rows and ${cols} columns; rows and columns must be more than 2`)
   }
@@ -41,5 +61,5 @@ export function gridModel (
     }
   }
 
-  return new SimpleModel(vertices, indices)
+  return new VolumetricModel(vertices, indices)
 }

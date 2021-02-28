@@ -1,9 +1,9 @@
-import { Model } from './model'
+import { Model, PreparedModel } from './model'
 
 /**
  * Simple model prepared to be drawn.
  */
-export class PreparedSimpleModel {
+export class PreparedSimpleModel implements PreparedModel {
   /**
    * Returns simple model prepared to be drawn.
    * @param vertices Vertices buffer.
