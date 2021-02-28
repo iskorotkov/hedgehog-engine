@@ -1,70 +1,42 @@
 import { Engine } from './engine/engine'
-import { planeShader } from './engine/shaders/vertex/planeShader'
-import { wavesShader } from './engine/shaders/fragment/wavesShader'
-import { rectangleModel } from './engine/models/rectangleModel'
-import { ringsShader } from './engine/shaders/fragment/ringsShader'
-import { parallelLinesShader } from './engine/shaders/fragment/parallelLinesShader'
-import { degrees, radians } from './math/angle'
+import { gridModel } from './engine/models/gridModel'
+import { Vector3 } from './math/vector'
+import { volumetricShader } from './engine/shaders/fragment/volumetricShader'
+import { waterWavesShader } from './engine/shaders/vertex/waterWavesShader'
+import { Program2DSpecular } from './engine/programs/program2dSpecular'
+import { VolumetricRenderer } from './engine/renderer/volumetricRenderer'
+import { ParallelProjectionCamera } from './engine/camera/parallelCamera'
+import { Transform } from './engine/world/transform'
+import { BoundingBox } from './math/matrix'
+import { Actor } from './engine/world/actor'
 
-console.log('Starting WebGL app')
-new Engine('canvas1').init().run(rectangleModel, planeShader, parallelLinesShader({
-  lines: 5,
-  sharp: false
-}))
-new Engine('canvas2').init().run(rectangleModel, planeShader, parallelLinesShader({
-  lines: 10,
-  angle: degrees(90),
-  sharp: true
-}))
-new Engine('canvas3').init().run(rectangleModel, planeShader, parallelLinesShader({
-  lines: 5,
-  angle: degrees(60),
-  balance: 0.2
-}))
-new Engine('canvas4').init().run(rectangleModel, planeShader, parallelLinesShader({
-  lines: 10,
-  angle: degrees(135),
-  balance: 0.7
-}))
-new Engine('canvas5').init().run(rectangleModel, planeShader, ringsShader({
-  rings: 5,
-  sharp: false,
-  balance: 0.2,
-  offset: 0.12
-}))
-new Engine('canvas6').init().run(rectangleModel, planeShader, ringsShader({
-  rings: 5,
-  sharp: true,
-  balance: 0.8
-}))
-new Engine('canvas7').init().run(rectangleModel, planeShader, wavesShader({
-  lines: 5,
-  density: 5,
-  height: 3,
-  sharp: false,
-  balance: 0.5
-}))
-new Engine('canvas8').init().run(rectangleModel, planeShader, wavesShader({
-  lines: 5,
-  density: 5,
-  height: 3,
-  sharp: true,
-  balance: 0.7,
-  angle: radians(Math.PI * 0.55)
-}))
-new Engine('canvas9').init().run(rectangleModel, planeShader, wavesShader({
-  lines: 5,
-  density: 5,
-  height: 3,
-  sharp: false,
-  balance: 0.5,
-  angle: radians(Math.PI * 0.33)
-}))
-new Engine('canvas10').init().run(rectangleModel, planeShader, wavesShader({
-  lines: 5,
-  density: 5,
-  height: 3,
-  sharp: true,
-  balance: 0.7,
-  angle: radians(Math.PI * 0.75)
-}))
+const grid = { rows: 10, cols: 10 }
+const gridColor = { diffuse: new Vector3(1, 0, 0), specular: new Vector3(1, 1, 1) }
+const lightPosition = new Vector3(5, 0, 0)
+const specular = 20
+const params = {
+  a: 0.2,
+  b: 4,
+  c: 0.1
+}
+
+const cameraTransform = new Transform(new Vector3(-5, 0, 0), new Vector3(45, 45, 0), new Vector3(1, 1, 1))
+const box: BoundingBox = {
+  near: 0.01,
+  far: 100,
+  left: -10,
+  right: 10,
+  bottom: -10,
+  top: 10
+}
+const camera = new ParallelProjectionCamera(cameraTransform, box)
+const renderer = new VolumetricRenderer(camera)
+
+const actor = new Actor(
+  gridModel(grid, gridColor),
+  new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
+  new Program2DSpecular(),
+  waterWavesShader(params),
+  volumetricShader(lightPosition, specular))
+
+new Engine('canvas', renderer).init().run([actor])

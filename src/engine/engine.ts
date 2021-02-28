@@ -1,8 +1,5 @@
-import { VertexShader } from './shaders/vertex/vertexShader'
-import { FragmentShader } from './shaders/fragment/fragmentShader'
-import { Model } from './models/model'
 import { Renderer } from './renderer/renderer'
-import { Program } from './programs/program'
+import { PreparedActor, Actor } from './world/actor'
 
 /**
  * Provides methods to draw a scene.
@@ -16,26 +13,28 @@ export class InitializedEngine {
   constructor (private readonly context: WebGLRenderingContext, private readonly renderer: Renderer) {}
 
   /**
-   * Displays model using vertex and fragment shaders.
-   * @param model Model to show.
-   * @param program Program to use.
-   * @param vertex Vertex shader to use.
-   * @param fragment Fragment shader to use.
+   * Draws list of actors in a scene.
+   * @param actors List of actors to draw.
    */
-  run (model: Model, program: Program, vertex: VertexShader, fragment: FragmentShader) {
-    console.log('Compiling shaders')
-    const vertexShader = vertex.compile(this.context)
-    const fragmentShader = fragment.compile(this.context)
-
-    console.log('Compiling shader program')
-    const compiledProgram = program.compile(this.context, vertexShader, fragmentShader)
-
-    console.log('Creating model')
-    const preparedModel = model.prepare(this.context)
-
-    console.log('Drawing')
+  run (actors: Actor[]) {
+    console.log('Clearing canvas')
     this.renderer.clear(this.context)
-    this.renderer.draw(this.context, preparedModel, compiledProgram)
+
+    for (const entity of actors) {
+      console.log('Compiling shaders')
+      const vertexShader = entity.vertex.compile(this.context)
+      const fragmentShader = entity.fragment.compile(this.context)
+
+      console.log('Compiling shader program')
+      const compiledProgram = entity.program.compile(this.context, vertexShader, fragmentShader)
+
+      console.log('Creating model')
+      const preparedModel = entity.model.prepare(this.context)
+      const actor = new PreparedActor(preparedModel, entity.transform)
+
+      console.log('Drawing')
+      this.renderer.drawActor(this.context, actor, compiledProgram)
+    }
   }
 }
 

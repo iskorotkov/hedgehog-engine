@@ -1,7 +1,7 @@
 import { Renderer } from './renderer'
 import { PreparedModel } from '../models/model'
 import { CompiledProgram } from '../programs/program'
-import { Actor } from '../world/actor'
+import { PreparedActor } from '../world/actor'
 import { Camera } from '../camera/camera'
 
 /**
@@ -11,7 +11,7 @@ export class VolumetricRenderer implements Renderer {
   constructor (private readonly camera: Camera) {
   }
 
-  drawActor (gl: WebGLRenderingContext, actor: Actor, program: CompiledProgram): void {
+  drawActor (gl: WebGLRenderingContext, actor: PreparedActor, program: CompiledProgram): void {
     program.drawActor(gl, actor, this.camera.view(), this.camera.projection())
   }
 

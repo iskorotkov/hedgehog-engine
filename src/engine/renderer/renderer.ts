@@ -1,6 +1,6 @@
 import { CompiledProgram } from '../programs/program'
 import { PreparedModel } from '../models/model'
-import { Actor } from '../world/actor'
+import { PreparedActor } from '../world/actor'
 
 /**
  * Renderer draws models onto a canvas using shader programs.
@@ -20,7 +20,7 @@ export interface Renderer {
    * @param actor Actor to draw.
    * @param program Shader program to use for drawing.
    */
-  drawActor (gl: WebGLRenderingContext, actor: Actor, program: CompiledProgram): void
+  drawActor (gl: WebGLRenderingContext, actor: PreparedActor, program: CompiledProgram): void
 
   /**
    * Clear drawing canvas.

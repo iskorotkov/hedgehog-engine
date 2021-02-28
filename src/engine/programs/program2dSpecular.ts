@@ -2,7 +2,7 @@ import { CompiledProgram, Program } from './program'
 import { CompiledVertexShader } from '../shaders/vertex/vertexShader'
 import { CompiledFragmentShader } from '../shaders/fragment/fragmentShader'
 import { PreparedModel } from '../models/model'
-import { Actor } from '../world/actor'
+import { PreparedActor } from '../world/actor'
 import { Matrix4 } from '../../math/matrix'
 
 /**
@@ -45,7 +45,7 @@ export class CompiledProgram2DSpecular implements CompiledProgram {
     gl.drawElements(gl.TRIANGLES, model.indexCount, gl.UNSIGNED_SHORT, 0)
   }
 
-  drawActor (gl: WebGLRenderingContext, actor: Actor, v: Matrix4, p: Matrix4) {
+  drawActor (gl: WebGLRenderingContext, actor: PreparedActor, v: Matrix4, p: Matrix4) {
     const m = actor.transform.asMatrix()
     const mv = m.multiply(v)
     const mvp = mv.multiply(p)
