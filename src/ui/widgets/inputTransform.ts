@@ -22,16 +22,13 @@ export function inputTransform (
 ): Widget {
   return new Widget('section', [], [
     new Widget('h3', [], [label]),
-    inputVector3('Position', positionSliderOpts, initial.position, pos => {
-      initial.position = pos
+    inputVector3('Position', positionSliderOpts, initial.position, () => {
       onchange(initial)
     }),
-    inputVector3('Rotation', rotationSliderOpts, initial.rotation, rot => {
-      initial.rotation = rot
+    inputVector3('Rotation', rotationSliderOpts, initial.rotation, () => {
       onchange(initial)
     }),
-    inputVector3('Scale', scaleSliderOpts, initial.scale, scale => {
-      initial.scale = scale
+    inputVector3('Scale', scaleSliderOpts, initial.scale, () => {
       onchange(initial)
     })
   ])
