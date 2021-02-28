@@ -2,6 +2,8 @@ import { CompiledProgram, Program } from './program'
 import { CompiledVertexShader } from '../shaders/vertex/vertexShader'
 import { CompiledFragmentShader } from '../shaders/fragment/fragmentShader'
 import { PreparedModel } from '../models/model'
+import { Matrix4 } from '../../math/matrix'
+import { Actor } from '../world/actor'
 
 /**
  * Already compiled shader program for 2D models.
@@ -16,12 +18,16 @@ export class CompiledProgram2D implements CompiledProgram {
   constructor (private readonly program: WebGLProgram, private readonly position: number, private readonly color: number) {
   }
 
+  drawActor (gl: WebGLRenderingContext, actor: Actor, _v: Matrix4, _p: Matrix4): void {
+    this.drawModel(gl, actor.model)
+  }
+
   /**
    * Draw model using provided WebGL context.
    * @param gl WebGL context.
    * @param model Model to draw.
    */
-  draw (gl: WebGLRenderingContext, model: PreparedModel) {
+  drawModel (gl: WebGLRenderingContext, model: PreparedModel) {
     gl.useProgram(this.program)
 
     gl.bindBuffer(gl.ARRAY_BUFFER, model.vertices)

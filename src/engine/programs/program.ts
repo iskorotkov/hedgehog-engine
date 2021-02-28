@@ -1,6 +1,8 @@
+import { Matrix4 } from '../../math/matrix'
 import { PreparedModel } from '../models/model'
 import { CompiledFragmentShader } from '../shaders/fragment/fragmentShader'
 import { CompiledVertexShader } from '../shaders/vertex/vertexShader'
+import { Actor } from '../world/actor'
 
 /**
  * Already compiled shader program.
@@ -11,7 +13,16 @@ export interface CompiledProgram {
    * @param gl WebGL context.
    * @param model Model to draw.
    */
-  draw (gl: WebGLRenderingContext, model: PreparedModel): void
+  drawModel (gl: WebGLRenderingContext, model: PreparedModel): void
+
+  /**
+   * Draw actor using WebGL context.
+   * @param gl WebGL context.
+   * @param actor Actor to draw.
+   * @param v View matrix.
+   * @param p Projection matrix.
+   */
+  drawActor (gl: WebGLRenderingContext, actor: Actor, v: Matrix4, p: Matrix4): void
 }
 
 /**
