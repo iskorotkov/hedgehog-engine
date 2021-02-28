@@ -2,6 +2,18 @@ import { Vector3 } from './vector'
 import { Angle } from './angle'
 
 /**
+ * Bounding box for camera.
+ */
+export interface BoundingBox {
+    near: number,
+    far: number,
+    left: number,
+    right: number,
+    top: number,
+    bottom: number
+}
+
+/**
  * 2D square matrix.
  */
 export class Matrix2 {
@@ -81,6 +93,31 @@ export class Matrix2 {
    */
   set (row: number, col: number, n: number): void {
     this.values[row * 2 + col] = n
+  }
+
+  /**
+   * Return Matrix3 from this matrix.
+   * @returns First matrix minor as Matrix3.
+   */
+  toMatrix3 (): Matrix3 {
+    return new Matrix3([
+      this.at(0, 0), this.at(0, 1), 0,
+      this.at(1, 0), this.at(1, 1), 0,
+      0, 0, 0
+    ])
+  }
+
+  /**
+   * Return Matrix4 from this matrix.
+   * @returns First matrix minor as Matrix4.
+   */
+  toMatrix4 (): Matrix4 {
+    return new Matrix4([
+      this.at(0, 0), this.at(0, 1), 0, 0,
+      this.at(1, 0), this.at(1, 1), 0, 0,
+      0, 0, 0, 0,
+      0, 0, 0, 0
+    ])
   }
 }
 
@@ -167,6 +204,30 @@ export class Matrix3 {
   set (row: number, col: number, n: number): void {
     this.values[row * 3 + col] = n
   }
+
+  /**
+   * Return Matrix2 from this matrix.
+   * @returns First matrix minor as Matrix2.
+   */
+  toMatrix2 (): Matrix2 {
+    return new Matrix2([
+      this.at(0, 0), this.at(0, 1),
+      this.at(1, 0), this.at(1, 1)
+    ])
+  }
+
+  /**
+   * Return Matrix4 from this matrix.
+   * @returns First matrix minor as Matrix4.
+   */
+  toMatrix4 (): Matrix4 {
+    return new Matrix4([
+      this.at(0, 0), this.at(0, 1), this.at(0, 2), 0,
+      this.at(1, 0), this.at(1, 1), this.at(1, 2), 0,
+      this.at(2, 0), this.at(2, 1), this.at(2, 2), 0,
+      0, 0, 0, 0
+    ])
+  }
 }
 
 /**
@@ -249,6 +310,29 @@ export class Matrix4 {
    */
   set (row: number, col: number, n: number): void {
     this.values[row * 4 + col] = n
+  }
+
+  /**
+   * Return Matrix2 from this matrix.
+   * @returns First matrix minor as Matrix2.
+   */
+  toMatrix2 (): Matrix2 {
+    return new Matrix2([
+      this.at(0, 0), this.at(0, 1),
+      this.at(1, 0), this.at(1, 1)
+    ])
+  }
+
+  /**
+   * Return Matrix3 from this matrix.
+   * @returns First matrix minor as Matrix3.
+   */
+  toMatrix3 (): Matrix3 {
+    return new Matrix3([
+      this.at(0, 0), this.at(0, 1), this.at(0, 2),
+      this.at(1, 0), this.at(1, 1), this.at(1, 2),
+      this.at(2, 0), this.at(2, 1), this.at(2, 2)
+    ])
   }
 }
 
@@ -343,14 +427,7 @@ export function scale (scale: Vector3): Matrix4 {
  * @param far Far plane.
  * @param near Near plane.
  */
-export function parallelProject (
-  left: number,
-  right: number,
-  top: number,
-  bottom: number,
-  far: number,
-  near: number
-): Matrix4 {
+export function parallelProject ({ left, right, top, bottom, far, near }: BoundingBox): Matrix4 {
   return new Matrix4([
     2 / (right - left), 0, 0, -(right + left) / (right - left),
     0, 2 / (top - bottom), 0, -(top + bottom) / (top - bottom),
@@ -368,14 +445,7 @@ export function parallelProject (
  * @param far Far plane.
  * @param near Near plane.
  */
-export function perspectiveProject (
-  left: number,
-  right: number,
-  top: number,
-  bottom: number,
-  far: number,
-  near: number
-): Matrix4 {
+export function perspectiveProject ({ left, right, top, bottom, far, near }: BoundingBox): Matrix4 {
   return new Matrix4([
     2 * near / (right - left), 0, (right + left) / (right - left), 0,
     0, 2 * near / (top - bottom), (top + bottom) / (top - bottom), 0,

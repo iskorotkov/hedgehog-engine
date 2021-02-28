@@ -399,4 +399,33 @@ describe('matrices', () => {
       ]))
     })
   })
+
+  describe('conversions', () => {
+    const m2 = new Matrix2([
+      1, 2,
+      5, 6
+    ])
+    const m4 = new Matrix4([
+      1, 2, 3, 4,
+      5, 6, 7, 8,
+      9, 10, 11, 12,
+      13, 14, 15, 16
+    ])
+    const ext4 = new Matrix4([
+      1, 2, 0, 0,
+      5, 6, 0, 0,
+      0, 0, 0, 0,
+      0, 0, 0, 0
+    ])
+
+    it('shrinking', () => {
+      expect(m2.toMatrix4()).to.deep.equal(ext4)
+      expect(m2.toMatrix3().toMatrix4()).to.deep.equal(ext4)
+    })
+
+    it('extending', () => {
+      expect(m4.toMatrix2()).to.deep.equal(m2)
+      expect(m4.toMatrix3().toMatrix2()).to.deep.equal(m2)
+    })
+  })
 })
