@@ -20,9 +20,10 @@ export class Widget {
    */
   toHTML (): HTMLElement {
     const element = document.createElement(this.tag)
-    element.classList.add(...this.classNames)
 
-    this.onElementCreated(element)
+    if (this.classNames.length > 0) {
+      element.classList.add(...this.classNames)
+    }
 
     for (const child of this.children) {
       if (typeof child === 'string') {
@@ -32,6 +33,7 @@ export class Widget {
       }
     }
 
+    this.onElementCreated(element)
     return element
   }
 
