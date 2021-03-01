@@ -31,7 +31,8 @@ Open `index.html` file in the browser.
 - vertex and fragment shader compilation
 - flexible shader program compilation
 - different models to draw
-- page with a flexible list of all visualizations
+- widgets for editing scene without reloading
+- interchangeable cameras
 
 ## Tech stack
 
