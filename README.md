@@ -58,3 +58,5 @@ Use linters before committing to this repo.
 
 - [WebGL example - 3D cube](https://github.com/mdn/webgl-examples/blob/gh-pages/tutorial/sample5/webgl-demo.js)
 - [OpenGL matrices](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/)
+- [Water waves function](https://www.wolframalpha.com/input/?i=graph+0.2*cos%284*%28x*x%2Bz*z%29%29*exp%280.1*%28x*x%2Bz*z%29%29)
+- [Water waves function derivative](https://www.wolframalpha.com/input/?i=derivative+y-a*cos%28b*%28x*x%2Bz*z%29%29*exp%28c*%28x*x%2Bz*z%29%29)
