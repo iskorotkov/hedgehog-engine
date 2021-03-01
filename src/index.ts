@@ -43,7 +43,7 @@ const box: BoundingBox = { near: 0.01, far: 100, left: -6.4, right: 6.4, bottom:
 const cameraTransform = new Transform(new Vector3(0, 0, -10), new Vector3(50, -30, 0), new Vector3(1, 1, 1))
 const camera = new ParallelProjectionCamera(cameraTransform, box)
 
-const renderer = new VolumetricRenderer(camera)
+const renderer = new VolumetricRenderer(camera, new Vector3(1, 1, 1))
 const engine = new Engine('canvas', renderer).init()
 
 /**
