@@ -1,6 +1,6 @@
 import { Transform } from '../../engine/world/transform'
 import { inputVector3 } from './inputVector3'
-import { RangeOpts } from './range'
+import { RangeOpts } from './input'
 import { Widget } from './widget'
 
 /**

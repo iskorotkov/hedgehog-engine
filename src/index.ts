@@ -17,30 +17,30 @@ import { inputTransform } from './ui/widgets/inputTransform'
 import { Widget } from './ui/widgets/widget'
 import { inputVector3 } from './ui/widgets/inputVector3'
 
-const paramsOpts = { min: -20, max: 20 }
-const positionOpts = { min: -20, max: 20 }
-const rotationOpts = { min: -180, max: 180, step: 10 }
-const scaleOpts = { min: 0.1, max: 10 }
+const paramsOpts = { step: 0.1 }
+const positionOpts = { step: 1 }
+const rotationOpts = { step: 10 }
+const scaleOpts = { min: 0.1, step: 0.1 }
 
 let params = { a: 0.2, b: 4, c: 0.1 }
 const lightPosition = new Vector3(0, -10, 0)
 
-const grid = { rows: 100, cols: 100 }
+const grid = { rows: 200, cols: 200 }
 const gridColor = { diffuse: new Vector3(1, 0, 0), specular: new Vector3(1, 1, 1) }
 
 const specular = 1
 
-const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(0.8, 0.4, 0.8))
+const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1))
 
 const cube = new Actor(
   defaultCubeModel,
-  new Transform(new Vector3(0, -2, 0), new Vector3(30, -30, 0), new Vector3(0.5, 0.5, 0.5)),
+  new Transform(new Vector3(0, -10, 0), new Vector3(30, -30, 0), new Vector3(0.5, 0.5, 0.5)),
   new Program3D(),
   volumetricVertexShader,
   keepColorShader)
 
 const box: BoundingBox = { near: 0.01, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
-const cameraTransform = new Transform(new Vector3(0, -4, -10), new Vector3(40, 0, 0), new Vector3(1, 1, 1))
+const cameraTransform = new Transform(new Vector3(0, 0, -10), new Vector3(50, -30, 0), new Vector3(1, 1, 1))
 const camera = new ParallelProjectionCamera(cameraTransform, box)
 
 const renderer = new VolumetricRenderer(camera)

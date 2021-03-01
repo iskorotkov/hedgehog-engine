@@ -1,5 +1,5 @@
 import { Vector3 } from '../../math/vector'
-import { Range, RangeOpts } from './range'
+import { InputNumber, RangeOpts } from './input'
 import { Widget } from './widget'
 
 /**
@@ -20,21 +20,21 @@ export function inputVector3 (
     new Widget('div', [], [
       new Widget('label', [], [
         'X',
-        new Range(initial.x, sliderOptions, x => {
+        new InputNumber(initial.x, sliderOptions, x => {
           initial.x = x
           onchange(initial)
         })
       ]),
       new Widget('label', [], [
         'Y',
-        new Range(initial.y, sliderOptions, y => {
+        new InputNumber(initial.y, sliderOptions, y => {
           initial.y = y
           onchange(initial)
         })
       ]),
       new Widget('label', [], [
         'Z',
-        new Range(initial.z, sliderOptions, z => {
+        new InputNumber(initial.z, sliderOptions, z => {
           initial.z = z
           onchange(initial)
         })
