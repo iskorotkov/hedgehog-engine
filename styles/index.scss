@@ -1,10 +1,42 @@
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  font-family: sans-serif;
+  margin: 0.2em;
 }
+
+// Main
 
 main {
   display: flex;
   flex-flow: row wrap;
+
+  > * {
+    flex: 1;
+  }
+}
+
+// Canvas
+
+canvas {
+  border: #1114 0.001em solid;
+}
+
+// Section
+
+section {
+  border-radius: 0.2em;
+  box-shadow: #d7d7d7 0.2em 0.3em 1em 0.1em;
+  margin: 0.6em 0;
+  padding: 0.6em 0.8em;
+}
+
+// Input
+
+input {
+  margin: 0.25em;
+}
+
+// stylelint-disable-next-line selector-no-qualifying-type
+input[type='number'] {
+  width: 5em;
 }

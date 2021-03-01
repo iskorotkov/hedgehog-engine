@@ -21,7 +21,7 @@ export function inputTransform (
   onchange: (value: Transform) => void
 ): Widget {
   return new Widget('section', [], [
-    new Widget('h3', [], [label]),
+    new Widget('h4', [], [label]),
     inputVector3('Position', positionSliderOpts, initial.position, () => {
       onchange(initial)
     }),

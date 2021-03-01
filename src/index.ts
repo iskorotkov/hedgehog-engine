@@ -58,11 +58,8 @@ function setupMenu () {
       }
       render()
     }),
-    new Widget('hr'),
     inputTransform('Camera', positionOpts, rotationOpts, scaleOpts, camera.transform, render),
-    new Widget('hr'),
     inputTransform('Graph', positionOpts, rotationOpts, scaleOpts, graphTransform, render),
-    new Widget('hr'),
     inputTransform('Light source (cube)', positionOpts, rotationOpts, scaleOpts, cube.transform, render)
   ])
 

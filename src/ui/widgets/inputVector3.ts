@@ -15,30 +15,28 @@ export function inputVector3 (
   initial: Vector3,
   onchange: (value: Vector3) => void
 ): Widget {
-  return new Widget('div', [], [
+  return new Widget('section', [], [
     new Widget('h4', [], [label]),
-    new Widget('div', [], [
-      new Widget('label', [], [
-        'X',
-        new InputNumber(initial.x, sliderOptions, x => {
-          initial.x = x
-          onchange(initial)
-        })
-      ]),
-      new Widget('label', [], [
-        'Y',
-        new InputNumber(initial.y, sliderOptions, y => {
-          initial.y = y
-          onchange(initial)
-        })
-      ]),
-      new Widget('label', [], [
-        'Z',
-        new InputNumber(initial.z, sliderOptions, z => {
-          initial.z = z
-          onchange(initial)
-        })
-      ])
+    new Widget('label', [], [
+      'X',
+      new InputNumber(initial.x, sliderOptions, x => {
+        initial.x = x
+        onchange(initial)
+      })
+    ]),
+    new Widget('label', [], [
+      'Y',
+      new InputNumber(initial.y, sliderOptions, y => {
+        initial.y = y
+        onchange(initial)
+      })
+    ]),
+    new Widget('label', [], [
+      'Z',
+      new InputNumber(initial.z, sliderOptions, z => {
+        initial.z = z
+        onchange(initial)
+      })
     ])
   ])
 }
