@@ -49,7 +49,7 @@ export class CompiledProgram2DSpecular implements CompiledProgram {
     const m = actor.transform.asMatrix()
     const mv = v.multiply(m)
     const mvp = p.multiply(mv)
-    const n = mv.toMatrix3().inverse().transpose()
+    const n = mv.toMatrix3().inverse() // Transposed normals matrix.
 
     gl.useProgram(this.program)
 
@@ -70,7 +70,7 @@ export class CompiledProgram2DSpecular implements CompiledProgram {
 
     gl.uniformMatrix4fv(this.mv, false, mv.transpose().values)
     gl.uniformMatrix4fv(this.mvp, false, mvp.transpose().values)
-    gl.uniformMatrix3fv(this.n, false, n.transpose().values)
+    gl.uniformMatrix3fv(this.n, false, n.values)
 
     gl.drawElements(gl.TRIANGLES, actor.model.indexCount, gl.UNSIGNED_SHORT, 0)
   }
