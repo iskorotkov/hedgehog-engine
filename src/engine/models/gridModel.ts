@@ -19,9 +19,9 @@ export interface Colors {
 
 /**
  * Creates a 2D grid.
- * @param transform Grid transform.
  * @param dimensions Grid dimensions.
  * @param colors Grid colors.
+ * @param scale Length of grid plane.
  * @returns Returns a model representing a 2D grid.
  */
 export function gridModel ({ rows, cols }: Dimensions, { diffuse, specular }: Colors, scale: number = 1): VolumetricModel {
