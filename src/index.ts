@@ -23,18 +23,17 @@ const rotationOpts = { step: 10 }
 const scaleOpts = { min: 0.1, step: 0.1 }
 
 let params = { a: 0.2, b: 4, c: 0.1 }
-const lightPosition = new Vector3(0, -10, 0)
 
 const grid = { rows: 200, cols: 200 }
 const gridColor = { diffuse: new Vector3(1, 0, 0), specular: new Vector3(1, 1, 1) }
 
-const specular = 1
+const specular = 20
 
 const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1))
 
 const cube = new Actor(
   defaultCubeModel,
-  new Transform(new Vector3(0, -10, 0), new Vector3(30, -30, 0), new Vector3(0.5, 0.5, 0.5)),
+  new Transform(new Vector3(0, 5, 0), new Vector3(30, -30, 0), new Vector3(0.1, 0.1, 0.1)),
   new Program3D(),
   volumetricVertexShader,
   keepColorShader)
@@ -64,9 +63,7 @@ function setupMenu () {
     new Widget('hr'),
     inputTransform('Graph', positionOpts, rotationOpts, scaleOpts, graphTransform, render),
     new Widget('hr'),
-    inputTransform('Cube', positionOpts, rotationOpts, scaleOpts, cube.transform, render),
-    new Widget('hr'),
-    inputVector3('Light position', positionOpts, lightPosition, render)
+    inputTransform('Light source (cube)', positionOpts, rotationOpts, scaleOpts, cube.transform, render)
   ])
 
   const root = document.getElementById('root')
@@ -86,7 +83,7 @@ function render () {
     graphTransform,
     new Program2DSpecular(),
     waterWavesShader(params),
-    volumetricFragmentShader(lightPosition, specular)
+    volumetricFragmentShader(cube.transform.position, camera.view(), specular)
   )
 
   engine.run([cube, graph])

@@ -33,8 +33,8 @@ vec3 grad(vec2 p)
     float z = p.y;
 
     float s = x * x + z * z;
-    float dx = 2.0 * a * x * exp(c * s) * (c * cos(b * s) - b * sin(b * s));
-    float dz = 2.0 * a * z * exp(c * s) * (c * cos(b * s) - b * sin(b * s));
+    float dx = -2.0 * a * x * exp(c * s) * (c * cos(b * s) - b * sin(b * s));
+    float dz = -2.0 * a * z * exp(c * s) * (c * cos(b * s) - b * sin(b * s));
     return vec3(dx, 1.0, dz);
 }`.trim()
   return functionShader(f, grad)

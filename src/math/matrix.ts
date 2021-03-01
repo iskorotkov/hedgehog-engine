@@ -334,6 +334,20 @@ export class Matrix4 {
       this.at(2, 0), this.at(2, 1), this.at(2, 2)
     ])
   }
+
+  /**
+   * Get position from the matrix.
+   */
+  toPosition (): Vector3 {
+    return new Vector3(this.at(0, 3), this.at(1, 3), this.at(2, 3))
+  }
+
+  /**
+   * Get scale from the matrix.
+   */
+  toScale (): Vector3 {
+    return new Vector3(this.at(0, 0), this.at(1, 1), this.at(2, 2))
+  }
 }
 
 /**
