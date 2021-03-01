@@ -2,6 +2,9 @@ import { BoundingBox, Matrix4, parallelProject } from '../../math/matrix'
 import { Transform } from '../world/transform'
 import { Camera } from './camera'
 
+/**
+ * Camera that uses parallel projection.
+ */
 export class ParallelProjectionCamera implements Camera {
   constructor (public readonly transform: Transform, public readonly box: BoundingBox) {
   }
