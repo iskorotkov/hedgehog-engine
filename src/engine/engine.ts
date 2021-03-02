@@ -1,8 +1,5 @@
-import { Program2D } from './programs/program2d'
-import { clear, draw } from './modules/graphics'
-import { VertexShader } from './shaders/vertex/vertexShader'
-import { FragmentShader } from './shaders/fragment/fragmentShader'
-import { Model } from './models/model'
+import { Renderer } from './renderer/renderer'
+import { PreparedActor, Actor } from './world/actor'
 
 /**
  * Provides methods to draw a scene.
@@ -11,30 +8,33 @@ export class InitializedEngine {
   /**
    * Returns an initialized engine for working with a provided WebGL context.
    * @param context WebGL context to work with.
+   * @param renderer Graphics renderer to use.
    */
-  constructor (private readonly context: WebGLRenderingContext) {}
+  constructor (private readonly context: WebGLRenderingContext, private readonly renderer: Renderer) {}
 
   /**
-   * Displays model using vertex and fragment shaders.
-   * @param model Model to show.
-   * @param vertex Vertex shader to use.
-   * @param fragment Fragment shader to use.
+   * Draws list of actors in a scene.
+   * @param actors List of actors to draw.
    */
-  run (model: Model, vertex: VertexShader, fragment: FragmentShader) {
-    console.log('Compiling shaders')
-    const vertexShader = vertex.compile(this.context)
-    const fragmentShader = fragment.compile(this.context)
+  run (actors: Actor[]) {
+    console.log('Clearing canvas')
+    this.renderer.clear(this.context)
 
-    console.log('Compiling shader program')
-    const program = new Program2D(vertexShader, fragmentShader)
-    const compiled = program.compile(this.context)
+    for (const entity of actors) {
+      console.log('Compiling shaders')
+      const vertexShader = entity.vertex.compile(this.context)
+      const fragmentShader = entity.fragment.compile(this.context)
 
-    console.log('Creating model')
-    const prepared = model.prepare(this.context)
+      console.log('Compiling shader program')
+      const compiledProgram = entity.program.compile(this.context, vertexShader, fragmentShader)
 
-    console.log('Drawing')
-    clear(this.context)
-    draw(this.context, compiled, prepared)
+      console.log('Creating model')
+      const preparedModel = entity.model.prepare(this.context)
+      const actor = new PreparedActor(preparedModel, entity.transform)
+
+      console.log('Drawing')
+      this.renderer.drawActor(this.context, actor, compiledProgram)
+    }
   }
 }
 
@@ -45,8 +45,9 @@ export class Engine {
   /**
    * Returns an engine associated with a HTML canvas element.
    * @param id ID of the HTML canvas element to attach to.
+   * @param renderer Graphics renderer to use.
    */
-  constructor (private readonly id: string) {}
+  constructor (private readonly id: string, private readonly renderer: Renderer) {}
 
   /**
    * Returns initialized WebGL engine.
@@ -70,6 +71,6 @@ export class Engine {
 
     console.log('Initializing WebGL viewport')
     gl.viewport(0, 0, canvas.width, canvas.height)
-    return new InitializedEngine(gl)
+    return new InitializedEngine(gl, this.renderer)
   }
 }

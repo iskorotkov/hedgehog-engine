@@ -1,34 +1,38 @@
 import { Model, PreparedModel } from './model'
 
 /**
- * Simple model prepared to be drawn.
+ * Volumetric model prepared to be drawn.
  */
-export class PreparedSimpleModel implements PreparedModel {
+export class PreparedVolumetricModel implements PreparedModel {
   /**
    * Returns simple model prepared to be drawn.
    * @param vertices Vertices buffer.
    * @param indices Indices buffer.
    * @param indexCount Number of indices.
    */
-  constructor (public readonly vertices: WebGLBuffer, public readonly indices: WebGLBuffer, public readonly indexCount: number) {}
+  constructor (
+    public readonly vertices: WebGLBuffer,
+    public readonly indices: WebGLBuffer,
+    public readonly indexCount: number
+  ) {}
 }
 
 /**
- * Simple model with a single vertices buffer and a single indices buffer.
+ * Volumetric model with a single vertices buffer and a single indices buffer.
  */
-export class SimpleModel implements Model {
+export class VolumetricModel implements Model {
   /**
-   * Returns a simple model with a single vertices buffer and a single indices buffer.
+   * Returns a volumetric model with a single vertices buffer and a single indices buffer.
    * @param vertices Vertices of the model.
    * @param indices Indices of the model.
    */
   constructor (private readonly vertices: number[], private readonly indices: number[]) {}
 
   /**
-   * Returns simple model prepared to be drawn.
+   * Returns volumetric model prepared to be drawn.
    * @param gl WebGL context.
    */
-  prepare (gl: WebGLRenderingContext): PreparedSimpleModel {
+  prepare (gl: WebGLRenderingContext): PreparedVolumetricModel {
     const verticesBuffer = gl.createBuffer()
     if (!verticesBuffer) {
       throw new Error('couldn\'t create vertices buffer')
@@ -45,6 +49,6 @@ export class SimpleModel implements Model {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indicesBuffer)
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW)
 
-    return new PreparedSimpleModel(verticesBuffer, indicesBuffer, this.indices.length)
+    return new PreparedVolumetricModel(verticesBuffer, indicesBuffer, this.indices.length)
   }
 }

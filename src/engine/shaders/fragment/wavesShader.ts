@@ -38,20 +38,20 @@ export function wavesShader ({
 precision highp float;
 precision lowp int;
 
-varying vec3 v_color;
+varying vec3 v_diffuse_color;
 
 void main()
 {
     // Waves
-    float wavesNormal = v_color.x * cos(${stringify(angle?.radians)}) + v_color.y * sin(${stringify(angle?.radians)});
+    float wavesNormal = v_diffuse_color.x * cos(${stringify(angle?.radians)}) + v_diffuse_color.y * sin(${stringify(angle?.radians)});
     float wavesArg = 2.0 * 3.14 * wavesNormal * ${stringify(density)};
     float wavesEffect = sin(wavesArg) * ${stringify(height)} - ${stringify(horizontalOffset)};
-    
+
     // Parallel lines
-    float distance = v_color.x * sin(${stringify(angle?.radians)}) - v_color.y * cos(${stringify(angle?.radians)});
+    float distance = v_diffuse_color.x * sin(${stringify(angle?.radians)}) - v_diffuse_color.y * cos(${stringify(angle?.radians)});
     float linesArg = 2.0 * 3.14 * distance * ${stringify(lines)} - ${stringify(verticalOffset)} + wavesEffect;
     float scaledLines = (sin(linesArg) + 1.0) / 2.0 + ${stringify(balance)} - 0.5;
-    
+
     gl_FragColor = vec4(${sharp ? 'step(0.5, scaledLines)' : 'scaledLines'}, 0.0, 0.0, 1.0);
 }
 `)

@@ -1,70 +1,90 @@
 import { Engine } from './engine/engine'
-import { planeShader } from './engine/shaders/vertex/planeShader'
-import { wavesShader } from './engine/shaders/fragment/wavesShader'
-import { rectangleModel } from './engine/models/rectangleModel'
-import { ringsShader } from './engine/shaders/fragment/ringsShader'
-import { parallelLinesShader } from './engine/shaders/fragment/parallelLinesShader'
-import { degrees, radians } from './math/angle'
+import { Vector3 } from './math/vector'
+import { VolumetricRenderer } from './engine/renderer/volumetricRenderer'
+import { ParallelProjectionCamera } from './engine/camera/parallelProjectionCamera'
+import { Transform } from './engine/world/transform'
+import { BoundingBox } from './math/matrix'
+import { Actor } from './engine/world/actor'
+import { defaultCubeModel } from './engine/models/cubeModel'
+import { Program3D } from './engine/programs/program3d'
+import { volumetricShader as volumetricVertexShader } from './engine/shaders/vertex/volumetricShader'
+import { volumetricShader as volumetricFragmentShader } from './engine/shaders/fragment/volumetricShader'
+import { keepColorShader } from './engine/shaders/fragment/keepColorShader'
+import { waterWavesShader } from './engine/shaders/vertex/waterWavesShader'
+import { Program2DSpecular } from './engine/programs/program2dSpecular'
+import { gridModel } from './engine/models/gridModel'
+import { inputTransform } from './ui/widgets/inputTransform'
+import { Widget } from './ui/widgets/widget'
+import { inputVector3 } from './ui/widgets/inputVector3'
 
-console.log('Starting WebGL app')
-new Engine('canvas1').init().run(rectangleModel, planeShader, parallelLinesShader({
-  lines: 5,
-  sharp: false
-}))
-new Engine('canvas2').init().run(rectangleModel, planeShader, parallelLinesShader({
-  lines: 10,
-  angle: degrees(90),
-  sharp: true
-}))
-new Engine('canvas3').init().run(rectangleModel, planeShader, parallelLinesShader({
-  lines: 5,
-  angle: degrees(60),
-  balance: 0.2
-}))
-new Engine('canvas4').init().run(rectangleModel, planeShader, parallelLinesShader({
-  lines: 10,
-  angle: degrees(135),
-  balance: 0.7
-}))
-new Engine('canvas5').init().run(rectangleModel, planeShader, ringsShader({
-  rings: 5,
-  sharp: false,
-  balance: 0.2,
-  offset: 0.12
-}))
-new Engine('canvas6').init().run(rectangleModel, planeShader, ringsShader({
-  rings: 5,
-  sharp: true,
-  balance: 0.8
-}))
-new Engine('canvas7').init().run(rectangleModel, planeShader, wavesShader({
-  lines: 5,
-  density: 5,
-  height: 3,
-  sharp: false,
-  balance: 0.5
-}))
-new Engine('canvas8').init().run(rectangleModel, planeShader, wavesShader({
-  lines: 5,
-  density: 5,
-  height: 3,
-  sharp: true,
-  balance: 0.7,
-  angle: radians(Math.PI * 0.55)
-}))
-new Engine('canvas9').init().run(rectangleModel, planeShader, wavesShader({
-  lines: 5,
-  density: 5,
-  height: 3,
-  sharp: false,
-  balance: 0.5,
-  angle: radians(Math.PI * 0.33)
-}))
-new Engine('canvas10').init().run(rectangleModel, planeShader, wavesShader({
-  lines: 5,
-  density: 5,
-  height: 3,
-  sharp: true,
-  balance: 0.7,
-  angle: radians(Math.PI * 0.75)
-}))
+const paramsOpts = { step: 0.1 }
+const positionOpts = { step: 1 }
+const rotationOpts = { step: 10 }
+const scaleOpts = { min: 0.1, step: 0.1 }
+
+let params = { a: 0.2, b: 4, c: 0.1 }
+
+const grid = { rows: 200, cols: 200 }
+const gridColor = { diffuse: new Vector3(1, 0, 0), specular: new Vector3(1, 1, 1) }
+
+const specular = 20
+
+const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1))
+
+const cube = new Actor(
+  defaultCubeModel,
+  new Transform(new Vector3(0, 5, 0), new Vector3(30, -30, 0), new Vector3(0.1, 0.1, 0.1)),
+  new Program3D(),
+  volumetricVertexShader,
+  keepColorShader)
+
+const box: BoundingBox = { near: 0.01, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
+const cameraTransform = new Transform(new Vector3(0, 0, -10), new Vector3(50, -30, 0), new Vector3(1, 1, 1))
+const camera = new ParallelProjectionCamera(cameraTransform, box)
+
+const renderer = new VolumetricRenderer(camera, new Vector3(1, 1, 1))
+const engine = new Engine('canvas', renderer).init()
+
+/**
+ * Setup menu.
+ */
+function setupMenu () {
+  const menu = new Widget('div', [], [
+    inputVector3('Function params', paramsOpts, new Vector3(params.a, params.b, params.c), value => {
+      params = {
+        a: value.x,
+        b: value.y,
+        c: value.z
+      }
+      render()
+    }),
+    inputTransform('Camera', positionOpts, rotationOpts, scaleOpts, camera.transform, render),
+    inputTransform('Graph', positionOpts, rotationOpts, scaleOpts, graphTransform, render),
+    inputTransform('Light source (cube)', positionOpts, rotationOpts, scaleOpts, cube.transform, render)
+  ])
+
+  const root = document.getElementById('root')
+  if (!root) {
+    throw new Error('couldn\'t find root element to attach hierarchy to')
+  }
+
+  root.appendChild(menu.toHTML())
+}
+
+/**
+ * Render scene.
+ */
+function render () {
+  const graph = new Actor(
+    gridModel(grid, gridColor, 5),
+    graphTransform,
+    new Program2DSpecular(),
+    waterWavesShader(params),
+    volumetricFragmentShader(cube.transform.position, camera.view(), specular)
+  )
+
+  engine.run([cube, graph])
+}
+
+setupMenu()
+render()

@@ -8,13 +8,13 @@ precision highp float;
 precision lowp int;
 
 attribute vec2 a_position;
-attribute vec3 a_color;
+attribute vec3 a_diffuse_color;
 
-varying vec3 v_color;
+varying vec3 v_diffuse_color;
 
 void main()
 {
-    v_color = a_color;
+    v_diffuse_color = a_diffuse_color;
     gl_Position = vec4(a_position, 0.0, 1.0);
 }
 `)
