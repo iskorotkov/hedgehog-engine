@@ -20,8 +20,8 @@ Install `Node.js` and `Yarn`, then run the following:
 
 ```shell
 yarn install
-yarn run 'tsc build'
-yarn run 'sass compile'
+yarn run tsc-build
+yarn run sass-compile
 ```
 
 Open `index.html` file in the browser.
