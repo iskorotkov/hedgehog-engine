@@ -1,5 +1,5 @@
 import { Vector3 } from '../../math/vector'
-import { VolumetricModel } from './volumetricModel'
+import { SimpleModel } from './simpleModel'
 
 /**
  * Dimensions for 2D grid.
@@ -20,11 +20,10 @@ export interface Colors {
 /**
  * Creates a 2D grid.
  * @param dimensions Grid dimensions.
- * @param colors Grid colors.
  * @param scale Length of grid plane.
  * @returns Returns a model representing a 2D grid.
  */
-export function gridModel ({ rows, cols }: Dimensions, { diffuse, specular }: Colors, scale: number = 1): VolumetricModel {
+export function gridModel ({ rows, cols }: Dimensions, scale: number = 1): SimpleModel {
   if (rows <= 1 || cols <= 1) {
     throw new Error(`can't create grid model with ${rows} rows and ${cols} columns; rows and columns must be more than 2`)
   }
@@ -37,10 +36,10 @@ export function gridModel ({ rows, cols }: Dimensions, { diffuse, specular }: Co
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       const x = start + size * row / (rows - 1)
-      const y = start + size * col / (cols - 1)
+      const z = start + size * col / (cols - 1)
 
-      // Two coordinates, 3 components of diffuse color, 3 components of specular color.
-      vertices.push(x, y, diffuse.x, diffuse.y, diffuse.z, specular.x, specular.y, specular.z)
+      // World coordinates and texture coordinates: (x, z, u, v).
+      vertices.push(x, z, row / (rows - 1), col / (cols - 1))
 
       if (row === 0 || col === 0) {
         continue
@@ -61,5 +60,5 @@ export function gridModel ({ rows, cols }: Dimensions, { diffuse, specular }: Co
     }
   }
 
-  return new VolumetricModel(vertices, indices)
+  return new SimpleModel(vertices, indices)
 }

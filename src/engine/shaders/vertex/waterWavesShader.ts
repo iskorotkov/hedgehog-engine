@@ -1,5 +1,5 @@
-import { functionShader } from './functionShader'
 import { stringify } from '../functions/stringify'
+import { functionTextureShader } from './functionTextureShader'
 
 /**
  * Vertex shader for drawing function
@@ -37,5 +37,5 @@ vec3 grad(vec2 p)
     float dz = -2.0 * a * z * exp(c * s) * (c * cos(b * s) - b * sin(b * s));
     return vec3(dx, 1.0, dz);
 }`.trim()
-  return functionShader(f, grad)
+  return functionTextureShader(f, grad)
 }
