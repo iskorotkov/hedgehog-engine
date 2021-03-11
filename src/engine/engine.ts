@@ -1,5 +1,17 @@
+import { CompiledProgram } from './programs/program'
 import { Renderer } from './renderer/renderer'
 import { PreparedActor, Actor } from './world/actor'
+
+class Entity {
+  /**
+   *
+   */
+  constructor (
+    public readonly actor: PreparedActor,
+    public readonly program: CompiledProgram
+  ) {
+  }
+}
 
 /**
  * Provides methods to draw a scene.
@@ -11,6 +23,8 @@ export class InitializedEngine {
    * @param renderer Graphics renderer to use.
    */
   constructor (private readonly context: WebGLRenderingContext, private readonly renderer: Renderer) {}
+
+  private readonly entities: Entity[] = []
 
   /**
    * Draws list of actors in a scene.
@@ -32,8 +46,17 @@ export class InitializedEngine {
       const preparedModel = entity.model.prepare(this.context)
       const actor = new PreparedActor(preparedModel, entity.transform)
 
+      this.entities.push(new Entity(actor, compiledProgram))
+    }
+  }
+
+  render () {
+    console.log('Clearing canvas')
+    this.renderer.clear(this.context)
+
+    for (const entity of this.entities) {
       console.log('Drawing')
-      this.renderer.drawActor(this.context, actor, compiledProgram)
+      this.renderer.drawActor(this.context, entity.actor, entity.program)
     }
   }
 }
