@@ -1,6 +1,7 @@
 .vs
 .vscode
 .idea
+.netlify
 node_modules
 dist
 publish
