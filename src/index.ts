@@ -38,6 +38,11 @@ const camera = new ParallelProjectionCamera(cameraTransform, box)
 const renderer = new VolumetricRenderer(camera, new Vector3(1, 1, 1))
 const engine = new Engine('canvas', renderer).init()
 
+const frogTexture = new Texture('./resources/textures/frog.jpg', new Vector4(255, 0, 0, 255))
+const greenTexture = new Texture('', new Vector4(0, 255, 0, 255))
+const defaultTexture = new Texture('')
+const whiteTexture = new Texture('', new Vector4(255, 255, 255, 255))
+
 /**
  * Setup menu.
  */
@@ -71,20 +76,19 @@ function createScene () {
   const cube = new Actor(
     cubeModel,
     cubeTransform,
-    new Program3D(new Texture('', new Vector4(0, 255, 0, 255)), new Texture('')),
+    new Program3D(greenTexture, defaultTexture),
     vertexShader,
     fragmentShader(new Vector3(0, 0, 0), camera.view(), 0))
 
   const graph = new Actor(
     gridModel(grid, 5),
     graphTransform,
-    new Program2D(new Texture('./resources/textures/frog.jpg', new Vector4(255, 0, 0, 255)), new Texture('', new Vector4(255, 255, 255, 255))),
+    new Program2D(frogTexture, whiteTexture),
     waterWavesShader(params),
     fragmentShader(cube.transform.position, camera.view(), specular)
   )
 
   engine.run([cube, graph])
-  render()
 }
 
 /**
@@ -97,3 +101,4 @@ function render () {
 
 setupMenu()
 createScene()
+render()

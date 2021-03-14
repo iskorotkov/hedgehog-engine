@@ -4,7 +4,7 @@ import { CompiledFragmentShader } from '../shaders/fragment/fragmentShader'
 import { PreparedModel } from '../models/model'
 import { PreparedActor } from '../world/actor'
 import { Matrix4 } from '../../math/matrix'
-import { prepareTexture, Texture } from '../../assets/texture'
+import { Texture } from '../../assets/texture'
 
 /**
  * Already compiled shader program for 3D models.
@@ -138,8 +138,8 @@ export class Program3D implements Program {
       throw new Error('couldn\'t link shader program')
     }
 
-    const diffuseTexture = prepareTexture(gl, this.diffuseTexture)
-    const specularTexture = prepareTexture(gl, this.specularTexture)
+    const diffuseTexture = this.diffuseTexture.load(gl)
+    const specularTexture = this.specularTexture.load(gl)
 
     const position = gl.getAttribLocation(shaderProgram, 'a_position')
     const uv = gl.getAttribLocation(shaderProgram, 'u_uv')

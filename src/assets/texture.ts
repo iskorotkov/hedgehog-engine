@@ -14,6 +14,30 @@ export class Texture {
     public readonly fallback: Vector4 = new Vector4(255, 192, 203, 255)
   ) {
   }
+
+  private cached: WebGLTexture | null = null
+
+  /**
+   * Load texture and prepare it for rendering.
+   * @param gl WebGL rendering context.
+   * @returns Loaded texture.
+   */
+  load (gl: WebGLRenderingContext) {
+    if (this.cached === null) {
+      this.cached = prepareTexture(gl, this)
+    }
+    return this.cached
+  }
+
+  /**
+   * Unload texture and free memory.
+   * @param gl WebGL rendering context.
+   */
+  unload (gl: WebGLRenderingContext) {
+    if (this.cached !== null) {
+      gl.deleteTexture(this.cached)
+    }
+  }
 }
 
 /**
@@ -22,7 +46,7 @@ export class Texture {
  * @param texture Texture to load.
  * @returns Returns prepared WebGLTexture.
  */
-export function prepareTexture (gl: WebGLRenderingContext, texture: Texture) {
+function prepareTexture (gl: WebGLRenderingContext, texture: Texture) {
   const glTexture = gl.createTexture()
   gl.bindTexture(gl.TEXTURE_2D, glTexture)
 
