@@ -28,11 +28,11 @@ const grid = { rows: 200, cols: 200 }
 
 const specular = 20
 
-const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(5, 1, 5))
+const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(20, 0, 0), new Vector3(5, 1, 5))
 const cubeTransform = new Transform(new Vector3(0, 5, 0), new Vector3(30, -30, 0), new Vector3(0.1, 0.1, 0.1))
 
-const box: BoundingBox = { near: 0.01, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
-const cameraTransform = new Transform(new Vector3(0, 0, -10), new Vector3(50, -30, 0), new Vector3(1, 1, 1))
+const box: BoundingBox = { near: 0.001, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
+const cameraTransform = new Transform(new Vector3(0, 3, 3), new Vector3(-40, 0, 0), new Vector3(1, 1, 1))
 const camera = new ParallelProjectionCamera(cameraTransform, box)
 
 const renderer = new VolumetricRenderer(camera, new Vector3(1, 1, 1))
