@@ -1,17 +1,5 @@
-import { CompiledProgram } from './programs/program'
 import { Renderer } from './renderer/renderer'
 import { PreparedActor, Actor } from './world/actor'
-
-class Entity {
-  /**
-   *
-   */
-  constructor (
-    public readonly actor: PreparedActor,
-    public readonly program: CompiledProgram
-  ) {
-  }
-}
 
 /**
  * Provides methods to draw a scene.
@@ -24,31 +12,31 @@ export class InitializedEngine {
    */
   constructor (private readonly context: WebGLRenderingContext, private readonly renderer: Renderer) {}
 
-  private entities: Entity[] = []
+  private actors: PreparedActor[] = []
 
   /**
-   * Draws list of actors in a scene.
+   * Places given actors in a scene.
    * @param actors List of actors to draw.
    */
-  run (actors: Actor[]) {
+  compose (actors: Actor[]) {
     console.log('Clearing canvas')
     this.renderer.clear(this.context)
 
-    this.entities = []
+    this.actors = []
 
-    for (const entity of actors) {
+    for (const actor of actors) {
       console.log('Compiling shaders')
-      const vertexShader = entity.vertex.compile(this.context)
-      const fragmentShader = entity.fragment.compile(this.context)
+      const vertexShader = actor.vertex.compile(this.context)
+      const fragmentShader = actor.fragment.compile(this.context)
 
       console.log('Compiling shader program')
-      const compiledProgram = entity.program.compile(this.context, vertexShader, fragmentShader)
+      const compiledProgram = actor.program.compile(this.context, vertexShader, fragmentShader)
 
       console.log('Creating model')
-      const preparedModel = entity.model.prepare(this.context)
-      const actor = new PreparedActor(preparedModel, entity.transform)
+      const preparedModel = actor.model.prepare(this.context)
+      const preparedActor = new PreparedActor(preparedModel, actor.transform, compiledProgram)
 
-      this.entities.push(new Entity(actor, compiledProgram))
+      this.actors.push(preparedActor)
     }
   }
 
@@ -56,9 +44,9 @@ export class InitializedEngine {
     console.log('Clearing canvas')
     this.renderer.clear(this.context)
 
-    for (const entity of this.entities) {
+    for (const actor of this.actors) {
       console.log('Drawing')
-      this.renderer.drawActor(this.context, entity.actor, entity.program)
+      this.renderer.drawActor(this.context, actor)
     }
   }
 }

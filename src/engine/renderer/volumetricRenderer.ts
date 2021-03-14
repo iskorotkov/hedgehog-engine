@@ -12,8 +12,8 @@ export class VolumetricRenderer implements Renderer {
   constructor (private readonly camera: Camera, private readonly clearColor: Vector3) {
   }
 
-  drawActor (gl: WebGLRenderingContext, actor: PreparedActor, program: CompiledProgram): void {
-    program.drawActor(gl, actor, this.camera.view(), this.camera.projection())
+  drawActor (gl: WebGLRenderingContext, actor: PreparedActor): void {
+    actor.program.drawActor(gl, actor, this.camera.view(), this.camera.projection())
   }
 
   drawModel (gl: WebGLRenderingContext, model: PreparedModel, program: CompiledProgram) {

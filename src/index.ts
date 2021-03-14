@@ -88,7 +88,7 @@ function createScene () {
     fragmentShader(cube.transform.position, camera.view(), specular)
   )
 
-  engine.run([cube, graph])
+  engine.compose([cube, graph])
 }
 
 /**

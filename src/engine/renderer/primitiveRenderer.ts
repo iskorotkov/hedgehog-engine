@@ -7,7 +7,7 @@ import { PreparedActor } from '../world/actor'
  * PrimitiveRenderer draws a model without using a depth buffer.
  */
 export class PrimitiveRenderer implements Renderer {
-  drawActor (_gl: WebGLRenderingContext, _actor: PreparedActor, _program: CompiledProgram): void {
+  drawActor (_gl: WebGLRenderingContext, _actor: PreparedActor): void {
     throw new Error('This renderer doesn\'t support rendering actors.')
   }
 
