@@ -41,7 +41,7 @@ const engine = new Engine('canvas', renderer).init()
 const frogTexture = new Texture('./resources/textures/frog.jpg', new Vector4(255, 0, 0, 255))
 const greenTexture = new Texture('', new Vector4(0, 255, 0, 255))
 const defaultTexture = new Texture('')
-const whiteTexture = new Texture('', new Vector4(255, 255, 255, 255))
+const gradientTexture = new Texture('./resources/textures/gradient.png', new Vector4(0, 0, 0, 0))
 
 /**
  * Setup menu.
@@ -83,7 +83,7 @@ function createScene () {
   const graph = new Actor(
     gridModel(grid),
     graphTransform,
-    new Program2D(frogTexture, whiteTexture),
+    new Program2D(frogTexture, gradientTexture),
     waterWavesShader(params),
     fragmentShader(cube.transform.position, camera.view(), specular)
   )
