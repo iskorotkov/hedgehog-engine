@@ -4,12 +4,12 @@ import { stringify } from '../functions/stringify'
 import { Matrix4, translate } from '../../../math/matrix'
 
 /**
- * Fragment shader that draws 3D mesh with diffuse and specular color and reflections.
+ * Fragment shader that draws textured 3D mesh.
  * @param lightPosition Position of the light source.
  * @param view View matrix.
  * @param specular Specular level.
  */
-export function volumetricShader (lightPosition: Vector3, view: Matrix4, specular: number) {
+export function volumetricTextureShader (lightPosition: Vector3, view: Matrix4, specular: number) {
   const globalLightPosition = view.multiply(translate(lightPosition)).toPosition()
 
   const light = {
@@ -26,8 +26,10 @@ precision lowp int;
 
 varying vec3 v_normal;
 varying vec3 v_position;
-varying vec3 v_diffuseColor;
-varying vec3 v_specularColor;
+varying vec2 v_uv;
+
+uniform sampler2D u_diffuseColor;
+uniform sampler2D u_specularColor;
 
 void main()
 {
@@ -35,13 +37,15 @@ void main()
     vec3 E = vec3(0.0, 0.0, 0.0);
     vec3 lightDirection = normalize(${light} - v_position);
 
-    float diffuse = max(dot(normals, lightDirection), 0.01);
+    float diffuseStrength = max(dot(normals, lightDirection), 0.01);
 
     vec3 e = normalize(E - v_position);
     vec3 halfVector = normalize(e + lightDirection);
-    float specular = pow(max(dot(normals, halfVector), 0.0), ${stringify(specular)});
+    float specularStrength = pow(max(dot(normals, halfVector), 0.0), ${stringify(specular)});
 
-    gl_FragColor = vec4(v_diffuseColor * diffuse + v_specularColor * specular, 1.0);
+    vec4 diffuseColor = texture2D(u_diffuseColor, v_uv);
+    vec4 specularColor = texture2D(u_specularColor, v_uv);
+    gl_FragColor = vec4(diffuseColor.xyz * diffuseStrength + specularColor.xyz * specularStrength, 1.0);
 }
 `.trim())
 }

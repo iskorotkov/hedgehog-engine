@@ -1,5 +1,5 @@
 import { Model, PreparedModel } from '../models/model'
-import { Program } from '../programs/program'
+import { CompiledProgram, Program } from '../programs/program'
 import { FragmentShader } from '../shaders/fragment/fragmentShader'
 import { VertexShader } from '../shaders/vertex/vertexShader'
 import { Transform } from './transform'
@@ -16,6 +16,10 @@ export class Actor {
 }
 
 export class PreparedActor {
-  constructor (public readonly model: PreparedModel, public readonly transform: Transform) {
+  constructor (
+    public readonly model: PreparedModel,
+    public readonly transform: Transform,
+    public readonly program: CompiledProgram
+  ) {
   }
 }

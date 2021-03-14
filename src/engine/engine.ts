@@ -12,28 +12,41 @@ export class InitializedEngine {
    */
   constructor (private readonly context: WebGLRenderingContext, private readonly renderer: Renderer) {}
 
+  private actors: PreparedActor[] = []
+
   /**
-   * Draws list of actors in a scene.
+   * Places given actors in a scene.
    * @param actors List of actors to draw.
    */
-  run (actors: Actor[]) {
+  compose (actors: Actor[]) {
     console.log('Clearing canvas')
     this.renderer.clear(this.context)
 
-    for (const entity of actors) {
+    this.actors = []
+
+    for (const actor of actors) {
       console.log('Compiling shaders')
-      const vertexShader = entity.vertex.compile(this.context)
-      const fragmentShader = entity.fragment.compile(this.context)
+      const vertexShader = actor.vertex.compile(this.context)
+      const fragmentShader = actor.fragment.compile(this.context)
 
       console.log('Compiling shader program')
-      const compiledProgram = entity.program.compile(this.context, vertexShader, fragmentShader)
+      const compiledProgram = actor.program.compile(this.context, vertexShader, fragmentShader)
 
       console.log('Creating model')
-      const preparedModel = entity.model.prepare(this.context)
-      const actor = new PreparedActor(preparedModel, entity.transform)
+      const preparedModel = actor.model.prepare(this.context)
+      const preparedActor = new PreparedActor(preparedModel, actor.transform, compiledProgram)
 
+      this.actors.push(preparedActor)
+    }
+  }
+
+  render () {
+    console.log('Clearing canvas')
+    this.renderer.clear(this.context)
+
+    for (const actor of this.actors) {
       console.log('Drawing')
-      this.renderer.drawActor(this.context, actor, compiledProgram)
+      this.renderer.drawActor(this.context, actor)
     }
   }
 }

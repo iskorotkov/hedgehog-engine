@@ -18,9 +18,8 @@ export interface Renderer {
    * Draw model using a shader program.
    * @param gl WebGL context.
    * @param actor Actor to draw.
-   * @param program Shader program to use for drawing.
    */
-  drawActor (gl: WebGLRenderingContext, actor: PreparedActor, program: CompiledProgram): void
+  drawActor (gl: WebGLRenderingContext, actor: PreparedActor): void
 
   /**
    * Clear drawing canvas.
