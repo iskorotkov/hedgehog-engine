@@ -22,13 +22,13 @@ const positionOpts = { step: 1 }
 const rotationOpts = { step: 10 }
 const scaleOpts = { min: 0.1, step: 0.1 }
 
-let params = { a: 0.2, b: 4, c: 0.1 }
+let params = { a: 0.2, b: 30, c: 0.1 }
 
 const grid = { rows: 200, cols: 200 }
 
 const specular = 20
 
-const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1))
+const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(5, 1, 5))
 const cubeTransform = new Transform(new Vector3(0, 5, 0), new Vector3(30, -30, 0), new Vector3(0.1, 0.1, 0.1))
 
 const box: BoundingBox = { near: 0.01, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
@@ -81,7 +81,7 @@ function createScene () {
     fragmentShader(new Vector3(0, 0, 0), camera.view(), 0))
 
   const graph = new Actor(
-    gridModel(grid, 5),
+    gridModel(grid),
     graphTransform,
     new Program2D(frogTexture, whiteTexture),
     waterWavesShader(params),

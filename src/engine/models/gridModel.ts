@@ -20,16 +20,15 @@ export interface Colors {
 /**
  * Creates a 2D grid.
  * @param dimensions Grid dimensions.
- * @param scale Length of grid plane.
  * @returns Returns a model representing a 2D grid.
  */
-export function gridModel ({ rows, cols }: Dimensions, scale: number = 1): SimpleModel {
+export function gridModel ({ rows, cols }: Dimensions): SimpleModel {
   if (rows <= 1 || cols <= 1) {
     throw new Error(`can't create grid model with ${rows} rows and ${cols} columns; rows and columns must be more than 2`)
   }
 
-  const start = -0.5 * scale
-  const size = 1 * scale
+  const start = -0.5
+  const size = 1
 
   const vertices = []
   const indices = []
