@@ -17,8 +17,8 @@ uniform mat3 u_n;
 
 varying vec3 v_normal;
 varying vec3 v_position;
-varying vec3 v_diffuse_color;
-varying vec3 v_specular_color;
+varying vec3 v_diffuseColor;
+varying vec3 v_specularColor;
 
 void main()
 {
@@ -26,8 +26,8 @@ void main()
 
     v_normal = u_n * normalize(a_position);
     v_position = vec3(u_mv * p0);
-    v_diffuse_color = a_diffuse_color;
-    v_specular_color = a_specular_color;
+    v_diffuseColor = a_diffuse_color;
+    v_specularColor = a_specular_color;
     gl_Position = u_mvp * p0;
 }
 `.trim())

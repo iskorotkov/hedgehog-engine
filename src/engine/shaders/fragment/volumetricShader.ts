@@ -26,8 +26,8 @@ precision lowp int;
 
 varying vec3 v_normal;
 varying vec3 v_position;
-varying vec3 v_diffuse_color;
-varying vec3 v_specular_color;
+varying vec3 v_diffuseColor;
+varying vec3 v_specularColor;
 
 void main()
 {
@@ -41,7 +41,7 @@ void main()
     vec3 halfVector = normalize(e + lightDirection);
     float specular = pow(max(dot(normals, halfVector), 0.0), ${stringify(specular)});
 
-    gl_FragColor = vec4(v_diffuse_color * diffuse + v_specular_color * specular, 1.0);
+    gl_FragColor = vec4(v_diffuseColor * diffuse + v_specularColor * specular, 1.0);
 }
 `.trim())
 }
