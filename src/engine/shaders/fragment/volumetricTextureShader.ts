@@ -45,7 +45,7 @@ void main()
 
     vec4 diffuseColor = texture2D(u_diffuseColor, v_uv);
     vec4 specularColor = texture2D(u_specularColor, v_uv);
-    gl_FragColor = diffuseColor * diffuseStrength + specularColor * specularStrength;
+    gl_FragColor = vec4(diffuseColor.xyz * diffuseStrength + specularColor.xyz * specularStrength, 1.0);
 }
 `.trim())
 }
