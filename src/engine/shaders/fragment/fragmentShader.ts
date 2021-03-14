@@ -20,24 +20,30 @@ export class FragmentShader {
   constructor (private readonly text: string) {
   }
 
+  private cache: CompiledFragmentShader | null = null
+
   /**
    * Returns compiled fragment shader.
    * @param gl
    */
   compile (gl: WebGLRenderingContext): CompiledFragmentShader {
-    const shader = gl.createShader(gl.FRAGMENT_SHADER)
+    if (this.cache === null) {
+      const shader = gl.createShader(gl.FRAGMENT_SHADER)
 
-    if (!shader) {
-      throw new Error('couldn\'t create shader')
+      if (!shader) {
+        throw new Error('couldn\'t create shader')
+      }
+
+      gl.shaderSource(shader, this.text)
+      gl.compileShader(shader)
+
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        throw new Error('shader couldn\'t be compiled')
+      }
+
+      this.cache = new CompiledFragmentShader(shader)
     }
 
-    gl.shaderSource(shader, this.text)
-    gl.compileShader(shader)
-
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      throw new Error('shader couldn\'t be compiled')
-    }
-
-    return new CompiledFragmentShader(shader)
+    return this.cache
   }
 }

@@ -20,24 +20,30 @@ export class VertexShader {
   constructor (private readonly text: string) {
   }
 
+  private cache: CompiledVertexShader | null = null
+
   /**
    * Returns compiled vertex shader.
    * @param gl WebGL context
    */
   compile (gl: WebGLRenderingContext): CompiledVertexShader {
-    const shader = gl.createShader(gl.VERTEX_SHADER)
+    if (this.cache === null) {
+      const shader = gl.createShader(gl.VERTEX_SHADER)
 
-    if (!shader) {
-      throw new Error('couldn\'t create shader')
+      if (!shader) {
+        throw new Error('couldn\'t create shader')
+      }
+
+      gl.shaderSource(shader, this.text)
+      gl.compileShader(shader)
+
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        throw new Error('shader couldn\'t be compiled')
+      }
+
+      this.cache = new CompiledVertexShader(shader)
     }
 
-    gl.shaderSource(shader, this.text)
-    gl.compileShader(shader)
-
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      throw new Error('shader couldn\'t be compiled')
-    }
-
-    return new CompiledVertexShader(shader)
+    return this.cache
   }
 }
