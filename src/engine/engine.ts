@@ -24,7 +24,7 @@ export class InitializedEngine {
    */
   constructor (private readonly context: WebGLRenderingContext, private readonly renderer: Renderer) {}
 
-  private readonly entities: Entity[] = []
+  private entities: Entity[] = []
 
   /**
    * Draws list of actors in a scene.
@@ -33,6 +33,8 @@ export class InitializedEngine {
   run (actors: Actor[]) {
     console.log('Clearing canvas')
     this.renderer.clear(this.context)
+
+    this.entities = []
 
     for (const entity of actors) {
       console.log('Compiling shaders')
