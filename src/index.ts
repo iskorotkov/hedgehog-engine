@@ -38,10 +38,10 @@ const camera = new ParallelProjectionCamera(cameraTransform, box)
 const renderer = new VolumetricRenderer(camera, new Vector3(1, 1, 1))
 const engine = new Engine('canvas', renderer).init()
 
-const frogTexture = new Texture('./resources/textures/frog.jpg', new Vector4(255, 0, 0, 255))
+const frogTexture = new Texture('./resources/textures/frog.jpg')
+const gradientTexture = new Texture('./resources/textures/gradient.png')
 const greenTexture = new Texture('', new Vector4(0, 255, 0, 255))
 const defaultTexture = new Texture('')
-const gradientTexture = new Texture('./resources/textures/gradient.png', new Vector4(0, 0, 0, 0))
 
 /**
  * Setup menu.
