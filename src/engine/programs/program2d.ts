@@ -61,7 +61,7 @@ export class CompiledProgram2D implements CompiledProgram {
 
   drawActor (gl: WebGLRenderingContext, actor: PreparedActor, v: Matrix4, p: Matrix4) {
     const m = actor.transform.asMatrix()
-    const mv = v.multiply(m)
+    const mv = v.inverse().multiply(m)
     const mvp = p.multiply(mv)
     const n = mv.toMatrix3().inverse() // Transposed normals matrix.
 
