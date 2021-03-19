@@ -5,10 +5,8 @@ import { ParallelProjectionCamera } from './engine/camera/parallelProjectionCame
 import { Transform } from './engine/world/transform'
 import { BoundingBox } from './math/matrix'
 import { Actor } from './engine/world/actor'
-import { cubeModel } from './engine/models/cubeModel'
+import { cubeModelWithNormals } from './engine/models/cubeModel'
 import { Program3D } from './engine/programs/program3d'
-import { waterWavesShader } from './engine/shaders/vertex/waterWavesShader'
-import { Program2D } from './engine/programs/program2d'
 import { gridModel } from './engine/models/gridModel'
 import { inputTransform } from './ui/widgets/inputTransform'
 import { Widget } from './ui/widgets/widget'
@@ -24,7 +22,7 @@ const scaleOpts = { min: 0.1, step: 0.1 }
 
 let params = { a: 0.2, b: 30, c: 0.1 }
 
-const grid = { rows: 200, cols: 200 }
+const dimensions = { rows: 200, cols: 200 }
 
 const specular = 20
 
@@ -74,17 +72,17 @@ function setupMenu () {
  */
 function createScene () {
   const cube = new Actor(
-    cubeModel,
+    cubeModelWithNormals,
     cubeTransform,
     new Program3D(greenTexture, defaultTexture),
     vertexShader,
     fragmentShader(new Vector3(0, 0, 0), camera.view(), 0))
 
   const graph = new Actor(
-    gridModel(grid),
+    gridModel(dimensions, '3d', 'add'),
     graphTransform,
-    new Program2D(frogTexture, gradientTexture),
-    waterWavesShader(params),
+    new Program3D(frogTexture, gradientTexture),
+    vertexShader,
     fragmentShader(cube.transform.position, camera.view(), specular)
   )
 

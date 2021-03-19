@@ -8,6 +8,7 @@ precision highp float;
 precision lowp int;
 
 attribute vec3 a_position;
+attribute vec3 a_normal;
 attribute vec2 a_uv;
 
 uniform mat4 u_mvp;
@@ -22,7 +23,7 @@ void main()
 {
     vec4 p0 = vec4(a_position, 1.0);
 
-    v_normal = u_n * normalize(a_position);
+    v_normal = u_n * normalize(a_normal);
     v_position = vec3(u_mv * p0);
     v_uv = a_uv;
     gl_Position = u_mvp * p0;

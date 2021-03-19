@@ -133,7 +133,7 @@ export class Program2D implements Program {
     const specularTexture = this.specularTexture.load(gl)
 
     const position = gl.getAttribLocation(shaderProgram, 'a_position')
-    const uv = gl.getAttribLocation(shaderProgram, 'u_uv')
+    const uv = gl.getAttribLocation(shaderProgram, 'a_uv')
 
     const mvp = gl.getUniformLocation(shaderProgram, 'u_mvp')
     const mv = gl.getUniformLocation(shaderProgram, 'u_mv')

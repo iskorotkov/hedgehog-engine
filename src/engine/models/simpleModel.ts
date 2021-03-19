@@ -22,7 +22,7 @@ export class SimpleModel implements Model {
    * @param vertices Vertices of the model.
    * @param indices Indices of the model.
    */
-  constructor (private readonly vertices: number[], private readonly indices: number[]) {}
+  constructor (public vertices: number[], public indices: number[]) {}
 
   /**
    * Returns simple model prepared to be drawn.

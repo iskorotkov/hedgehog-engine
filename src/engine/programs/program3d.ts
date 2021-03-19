@@ -20,6 +20,7 @@ export class CompiledProgram3D implements CompiledProgram {
   constructor (
     private readonly program: WebGLProgram,
     private readonly position: number,
+    private readonly normal: number,
     private readonly uv: number,
     public readonly diffuseTexture: WebGLTexture | null,
     public readonly specularTexture: WebGLTexture | null,
@@ -42,10 +43,13 @@ export class CompiledProgram3D implements CompiledProgram {
     gl.bindBuffer(gl.ARRAY_BUFFER, model.vertices)
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, model.indices)
 
-    gl.vertexAttribPointer(this.position, 3, gl.FLOAT, false, 5 * 4, 0)
+    gl.vertexAttribPointer(this.position, 3, gl.FLOAT, false, 8 * 4, 0)
     gl.enableVertexAttribArray(this.position)
 
-    gl.vertexAttribPointer(this.uv, 2, gl.FLOAT, false, 5 * 4, 3 * 4)
+    gl.vertexAttribPointer(this.normal, 3, gl.FLOAT, false, 8 * 4, 3 * 4)
+    gl.enableVertexAttribArray(this.normal)
+
+    gl.vertexAttribPointer(this.uv, 2, gl.FLOAT, false, 8 * 4, 6 * 4)
     gl.enableVertexAttribArray(this.uv)
 
     gl.activeTexture(gl.TEXTURE0 + 0)
@@ -80,12 +84,17 @@ export class CompiledProgram3D implements CompiledProgram {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, actor.model.indices)
 
     if (this.position >= 0) {
-      gl.vertexAttribPointer(this.position, 3, gl.FLOAT, false, 5 * 4, 0)
+      gl.vertexAttribPointer(this.position, 3, gl.FLOAT, false, 8 * 4, 0)
       gl.enableVertexAttribArray(this.position)
     }
 
+    if (this.normal >= 0) {
+      gl.vertexAttribPointer(this.normal, 3, gl.FLOAT, false, 8 * 4, 3 * 4)
+      gl.enableVertexAttribArray(this.normal)
+    }
+
     if (this.uv >= 0) {
-      gl.vertexAttribPointer(this.uv, 2, gl.FLOAT, false, 5 * 4, 3 * 4)
+      gl.vertexAttribPointer(this.uv, 2, gl.FLOAT, false, 8 * 4, 6 * 4)
       gl.enableVertexAttribArray(this.uv)
     }
 
@@ -142,7 +151,8 @@ export class Program3D implements Program {
     const specularTexture = this.specularTexture.load(gl)
 
     const position = gl.getAttribLocation(shaderProgram, 'a_position')
-    const uv = gl.getAttribLocation(shaderProgram, 'u_uv')
+    const normal = gl.getAttribLocation(shaderProgram, 'a_normal')
+    const uv = gl.getAttribLocation(shaderProgram, 'a_uv')
 
     const mvp = gl.getUniformLocation(shaderProgram, 'u_mvp')
     const mv = gl.getUniformLocation(shaderProgram, 'u_mv')
@@ -150,7 +160,7 @@ export class Program3D implements Program {
     const diffuseTexBuffer = gl.getUniformLocation(shaderProgram, 'u_diffuseColor')
     const specularTexBuffer = gl.getUniformLocation(shaderProgram, 'u_specularColor')
 
-    return new CompiledProgram3D(shaderProgram, position, uv,
+    return new CompiledProgram3D(shaderProgram, position, normal, uv,
       diffuseTexture, specularTexture,
       diffuseTexBuffer, specularTexBuffer, mvp, mv, n)
   }
