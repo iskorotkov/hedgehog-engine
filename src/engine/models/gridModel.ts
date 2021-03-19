@@ -1,4 +1,3 @@
-import { Vector3 } from '../../math/vector'
 import { SimpleModel } from './simpleModel'
 
 /**
@@ -7,14 +6,6 @@ import { SimpleModel } from './simpleModel'
 export interface Dimensions {
   rows: number,
   cols: number
-}
-
-/**
- * Set of colors for a model.
- */
-export interface Colors {
-  diffuse: Vector3,
-  specular: Vector3
 }
 
 /**
