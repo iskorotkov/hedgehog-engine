@@ -12,8 +12,8 @@ export class GridScroll {
    */
   constructor (
       private readonly model: SimpleModel,
-      private readonly componentsPerVertex: number = 8,
-      private readonly heightIndex: number = 4
+      private readonly componentsPerVertex: number,
+      private readonly heightIndex: number
   ) {
   }
 
@@ -42,7 +42,7 @@ export class GridScroll {
     // Assign heights to "new" vertices.
     const lastRowStart = (rows - 2) * columns * this.componentsPerVertex
     for (let col = 0; col < columns; col++) {
-      const index = lastRowStart + col * this.componentsPerVertex
+      const index = lastRowStart + col * this.componentsPerVertex + this.heightIndex
       this.model.vertices[index] = data[col] ?? -1
     }
   }

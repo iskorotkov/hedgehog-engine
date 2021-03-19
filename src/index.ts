@@ -14,6 +14,8 @@ import { inputVector3 } from './ui/widgets/inputVector3'
 import { Texture } from './assets/texture'
 import { volumetricTextureShader as fragmentShader } from './engine/shaders/fragment/volumetricTextureShader'
 import { volumetricTextureShader as vertexShader } from './engine/shaders/vertex/volumetricTextureShader'
+import { MicrophoneInput } from './media/microphoneInput'
+import { GridScroll } from './special/gridScroll'
 
 const paramsOpts = { step: 0.1 }
 const positionOpts = { step: 1 }
@@ -22,12 +24,16 @@ const scaleOpts = { min: 0.1, step: 0.1 }
 
 let params = { a: 0.2, b: 30, c: 0.1 }
 
-const dimensions = { rows: 200, cols: 200 }
+const dimensions = { rows: 128, cols: 128 }
 
-const specular = 20
+const graphHeight = 3
+const graphSmoothing = 0.4
+const scrollInterval = 20
 
-const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(20, 0, 0), new Vector3(5, 1, 5))
-const cubeTransform = new Transform(new Vector3(0, 5, 0), new Vector3(30, -30, 0), new Vector3(0.1, 0.1, 0.1))
+const specular = 15
+
+const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(20, -50, 0), new Vector3(5, 1, 5))
+const cubeTransform = new Transform(new Vector3(0, 5, 0), new Vector3(30, -30, 0), new Vector3(0.05, 0.05, 0.05))
 
 const box: BoundingBox = { near: 0.001, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
 const cameraTransform = new Transform(new Vector3(0, 3, 3), new Vector3(-40, 0, 0), new Vector3(1, 1, 1))
@@ -36,10 +42,10 @@ const camera = new ParallelProjectionCamera(cameraTransform, box)
 const renderer = new VolumetricRenderer(camera, new Vector3(1, 1, 1))
 const engine = new Engine('canvas', renderer).init()
 
-const frogTexture = new Texture('./resources/textures/frog.jpg')
-const gradientTexture = new Texture('./resources/textures/gradient.png')
-const greenTexture = new Texture('', new Vector4(0, 255, 0, 255))
-const defaultTexture = new Texture('')
+const graphDiffuse = new Texture('', new Vector4(0, 0, 128, 255))
+const graphSpecular = new Texture('', new Vector4(64, 64, 64, 255))
+
+const cubeColor = new Texture('', new Vector4(255, 255, 0, 255))
 
 /**
  * Setup menu.
@@ -52,11 +58,11 @@ function setupMenu () {
         b: value.y,
         c: value.z
       }
-      createScene()
+      compose()
     }),
-    inputTransform('Camera', positionOpts, rotationOpts, scaleOpts, camera.transform, createScene),
-    inputTransform('Graph', positionOpts, rotationOpts, scaleOpts, graphTransform, createScene),
-    inputTransform('Light source (cube)', positionOpts, rotationOpts, scaleOpts, cubeTransform, createScene)
+    inputTransform('Camera', positionOpts, rotationOpts, scaleOpts, camera.transform, compose),
+    inputTransform('Graph', positionOpts, rotationOpts, scaleOpts, graphTransform, compose),
+    inputTransform('Light source (cube)', positionOpts, rotationOpts, scaleOpts, cubeTransform, compose)
   ])
 
   const root = document.getElementById('root')
@@ -67,21 +73,33 @@ function setupMenu () {
   root.appendChild(menu.toHTML())
 }
 
+const graphModel = gridModel(dimensions, '3d', 'add')
+const gridScroll = new GridScroll(graphModel, 8, 1)
+
+let microphoneInput: MicrophoneInput | null = null
+MicrophoneInput.create(dimensions.cols * 2, graphSmoothing).then(input => {
+  console.log('Microphone input is being captured')
+  microphoneInput = input
+}).catch(error => {
+  console.error(error)
+  alert('Couldn\'t start recording')
+})
+
 /**
  * Create and compose the scene.
  */
-function createScene () {
+function compose () {
   const cube = new Actor(
     cubeModelWithNormals,
     cubeTransform,
-    new Program3D(greenTexture, defaultTexture),
+    new Program3D(cubeColor, cubeColor),
     vertexShader,
     fragmentShader(new Vector3(0, 0, 0), camera.view(), 0))
 
   const graph = new Actor(
-    gridModel(dimensions, '3d', 'add'),
+    graphModel,
     graphTransform,
-    new Program3D(frogTexture, gradientTexture),
+    new Program3D(graphDiffuse, graphSpecular),
     vertexShader,
     fragmentShader(cube.transform.position, camera.view(), specular)
   )
@@ -97,6 +115,20 @@ function render () {
   requestAnimationFrame(render)
 }
 
+setInterval(() => {
+  if (microphoneInput) {
+    const bytes = microphoneInput.next()
+    const array = Array.prototype.slice.call(bytes).map(x => x / 256 * graphHeight)
+
+    console.log(`${bytes.length} read`)
+
+    gridScroll.scroll(array)
+    graphModel.markDirty()
+
+    compose()
+  }
+}, scrollInterval)
+
 setupMenu()
-createScene()
+compose()
 render()

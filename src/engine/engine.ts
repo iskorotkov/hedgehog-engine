@@ -77,7 +77,9 @@ export class Engine {
     canvas.height *= devicePixelRatio
 
     console.log('Initializing WebGL rendering context')
-    const gl = canvas.getContext('webgl2')
+    const gl = canvas.getContext('webgl2', {
+      powerPreference: 'high-performance'
+    })
     if (!gl) {
       throw new Error('couldn\'t create WebGL context')
     }
