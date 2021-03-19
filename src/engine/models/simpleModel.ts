@@ -24,27 +24,40 @@ export class SimpleModel implements Model {
    */
   constructor (public vertices: number[], public indices: number[]) {}
 
+  private cachedModel: PreparedModel | null = null
+
+  /**
+   * Clear cached model and force full redraw.
+   */
+  markDirty () {
+    this.cachedModel = null
+  }
+
   /**
    * Returns simple model prepared to be drawn.
    * @param gl WebGL context.
    */
   prepare (gl: WebGLRenderingContext): PreparedSimpleModel {
-    const verticesBuffer = gl.createBuffer()
-    if (!verticesBuffer) {
-      throw new Error('couldn\'t create vertices buffer')
+    if (!this.cachedModel) {
+      const verticesBuffer = gl.createBuffer()
+      if (!verticesBuffer) {
+        throw new Error('couldn\'t create vertices buffer')
+      }
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer)
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW)
+
+      const indicesBuffer = gl.createBuffer()
+      if (!indicesBuffer) {
+        throw new Error('couldn\'t create indices buffer')
+      }
+
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indicesBuffer)
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW)
+
+      this.cachedModel = new PreparedSimpleModel(verticesBuffer, indicesBuffer, this.indices.length)
     }
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW)
-
-    const indicesBuffer = gl.createBuffer()
-    if (!indicesBuffer) {
-      throw new Error('couldn\'t create indices buffer')
-    }
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indicesBuffer)
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW)
-
-    return new PreparedSimpleModel(verticesBuffer, indicesBuffer, this.indices.length)
+    return this.cachedModel
   }
 }
