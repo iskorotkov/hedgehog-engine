@@ -16,6 +16,8 @@ import { volumetricTextureShader as fragmentShader } from './engine/shaders/frag
 import { volumetricTextureShader as vertexShader } from './engine/shaders/vertex/volumetricTextureShader'
 import { MicrophoneInput } from './media/microphoneInput'
 import { GridScroll } from './special/gridScroll'
+import { heightShader as heightFragmentShader } from './engine/shaders/fragment/heightShader'
+import { heightShader as heightVertexShader } from './engine/shaders/vertex/heightShader'
 
 const paramsOpts = { step: 0.1 }
 const positionOpts = { step: 1 }
@@ -29,6 +31,16 @@ const dimensions = { rows: 128, cols: 128 }
 const graphHeight = 3
 const graphSmoothing = 0.4
 const scrollInterval = 20
+
+const graphHeightsRange = {
+  min: 0,
+  max: graphHeight
+}
+
+const graphColors = {
+  min: new Vector4(0, 255, 0, 255),
+  max: new Vector4(255, 0, 0, 255)
+}
 
 const specular = 15
 
@@ -100,8 +112,8 @@ function compose () {
     graphModel,
     graphTransform,
     new Program3D(graphDiffuse, graphSpecular),
-    vertexShader,
-    fragmentShader(cube.transform.position, camera.view(), specular)
+    heightVertexShader,
+    heightFragmentShader(cube.transform.position, camera.view(), specular, graphHeightsRange, graphColors)
   )
 
   engine.compose([cube, graph])
