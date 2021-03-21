@@ -10,7 +10,6 @@ import { Program3D } from './engine/programs/program3d'
 import { gridModel } from './engine/models/gridModel'
 import { inputTransform } from './ui/widgets/inputTransform'
 import { Widget } from './ui/widgets/widget'
-import { inputVector3 } from './ui/widgets/inputVector3'
 import { Texture } from './assets/texture'
 import { volumetricTextureShader as fragmentShader } from './engine/shaders/fragment/volumetricTextureShader'
 import { volumetricTextureShader as vertexShader } from './engine/shaders/vertex/volumetricTextureShader'
@@ -19,18 +18,15 @@ import { GridScroll } from './special/gridScroll'
 import { heightShader as heightFragmentShader } from './engine/shaders/fragment/heightShader'
 import { heightShader as heightVertexShader } from './engine/shaders/vertex/heightShader'
 
-const paramsOpts = { step: 0.1 }
 const positionOpts = { step: 1 }
 const rotationOpts = { step: 10 }
 const scaleOpts = { min: 0.1, step: 0.1 }
 
-let params = { a: 0.2, b: 30, c: 0.1 }
-
-const dimensions = { rows: 128, cols: 128 }
+const dimensions = { rows: 32, cols: 32 }
 
 const graphHeight = 3
 const graphSmoothing = 0.4
-const scrollInterval = 20
+const scrollInterval = 200
 
 const graphHeightsRange = {
   min: 0,
@@ -44,11 +40,11 @@ const graphColors = {
 
 const specular = 15
 
-const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(20, -50, 0), new Vector3(5, 1, 5))
-const cubeTransform = new Transform(new Vector3(0, 5, 0), new Vector3(30, -30, 0), new Vector3(0.05, 0.05, 0.05))
+const graphTransform = new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(8, 1, 8))
+const cubeTransform = new Transform(new Vector3(1, 5, 1), new Vector3(0, 0, 0), new Vector3(0.05, 0.05, 0.05))
 
 const box: BoundingBox = { near: 0.001, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
-const cameraTransform = new Transform(new Vector3(0, 3, 3), new Vector3(-40, 0, 0), new Vector3(1, 1, 1))
+const cameraTransform = new Transform(new Vector3(3, 6, 6), new Vector3(-40, 20, 30), new Vector3(1, 1, 1))
 const camera = new ParallelProjectionCamera(cameraTransform, box)
 
 const renderer = new VolumetricRenderer(camera, new Vector3(1, 1, 1))
@@ -64,14 +60,6 @@ const cubeColor = new Texture('', new Vector4(255, 255, 0, 255))
  */
 function setupMenu () {
   const menu = new Widget('div', [], [
-    inputVector3('Function params', paramsOpts, new Vector3(params.a, params.b, params.c), value => {
-      params = {
-        a: value.x,
-        b: value.y,
-        c: value.z
-      }
-      compose()
-    }),
     inputTransform('Camera', positionOpts, rotationOpts, scaleOpts, camera.transform, compose),
     inputTransform('Graph', positionOpts, rotationOpts, scaleOpts, graphTransform, compose),
     inputTransform('Light source (cube)', positionOpts, rotationOpts, scaleOpts, cubeTransform, compose)
@@ -86,7 +74,7 @@ function setupMenu () {
 }
 
 const graphModel = gridModel(dimensions, '3d', 'add')
-const gridScroll = new GridScroll(graphModel, 8, 1)
+const gridScroll = new GridScroll(graphModel, 8, 1, 3)
 
 let microphoneInput: MicrophoneInput | null = null
 MicrophoneInput.create(dimensions.cols * 2, graphSmoothing).then(input => {
