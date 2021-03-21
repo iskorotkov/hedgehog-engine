@@ -72,7 +72,7 @@ void main()
     float minHeight = ${stringify(heights.min)};
     float maxHeight = ${stringify(heights.max)};
     float alpha = (v_original_position.y - minHeight) / (maxHeight - minHeight);
-    vec4 diffuseColor = mix(minColor, maxColor, alpha);
+    vec4 diffuseColor = mix(minColor, maxColor, clamp(alpha, 0.0, 1.0));
 
     vec4 specularColor = texture2D(u_specularColor, v_uv);
     gl_FragColor = vec4(diffuseColor.xyz * diffuseStrength + specularColor.xyz * specularStrength, 1.0);

@@ -13,7 +13,7 @@ import { Widget } from './ui/widgets/widget'
 import { Texture } from './assets/texture'
 import { volumetricTextureShader as fragmentShader } from './engine/shaders/fragment/volumetricTextureShader'
 import { volumetricTextureShader as vertexShader } from './engine/shaders/vertex/volumetricTextureShader'
-import { MicrophoneInput } from './media/microphoneInput'
+import { MicrophoneInput, Options } from './media/microphoneInput'
 import { GridScroll } from './special/gridScroll'
 import { heightShader as heightFragmentShader } from './engine/shaders/fragment/heightShader'
 import { heightShader as heightVertexShader } from './engine/shaders/vertex/heightShader'
@@ -22,20 +22,24 @@ const positionOpts = { step: 1 }
 const rotationOpts = { step: 10 }
 const scaleOpts = { min: 0.1, step: 0.1 }
 
-const dimensions = { rows: 32, cols: 32 }
+const dimensions = { rows: 128, cols: 128 }
 
-const graphHeight = 3
-const graphSmoothing = 0.4
-const scrollInterval = 200
+const graphHeight = 5
+const scrollInterval = 50
+
+const micOptions: Options = {
+  fftSize: dimensions.cols * 2,
+  smoothingTimeConstant: 0.8
+}
 
 const graphHeightsRange = {
   min: 0,
-  max: graphHeight
+  max: graphHeight * 0.4
 }
 
 const graphColors = {
-  min: new Vector4(0, 255, 0, 255),
-  max: new Vector4(255, 0, 0, 255)
+  min: new Vector4(20, 92, 145, 255),
+  max: new Vector4(252, 49, 3, 255)
 }
 
 const specular = 15
@@ -77,7 +81,7 @@ const graphModel = gridModel(dimensions, '3d', 'add')
 const gridScroll = new GridScroll(graphModel, 8, 1, 3)
 
 let microphoneInput: MicrophoneInput | null = null
-MicrophoneInput.create(dimensions.cols * 2, graphSmoothing).then(input => {
+MicrophoneInput.create(micOptions).then(input => {
   console.log('Microphone input is being captured')
   microphoneInput = input
 }).catch(error => {

@@ -10,12 +10,13 @@ export class GridScroll {
    * @param model Model to scroll.
    * @param componentsPerVertex Number of components per vertex.
    * @param heightIndex Index of height component to scroll.
+   * @param normalIndex Index of the first normal component (x) to scroll.
    */
   constructor (
       private readonly model: SimpleModel,
       private readonly componentsPerVertex: number,
       private readonly heightIndex: number,
-      private readonly normalStartIndex: number
+      private readonly normalIndex: number
   ) {
   }
 
@@ -37,47 +38,50 @@ export class GridScroll {
         const curColStart = curRowStart + col * this.componentsPerVertex
         const nextColStart = nextRowStart + col * this.componentsPerVertex
 
-        const curIndex = curColStart + this.heightIndex
-        const nextIndex = nextColStart + this.heightIndex
-        vertices[curIndex] = vertices[nextIndex] ?? -1
+        vertices[curColStart + this.heightIndex] = vertices[nextColStart + this.heightIndex] ?? -1
+        vertices[curColStart + this.normalIndex + 0] = vertices[nextColStart + this.normalIndex] ?? -1
+        vertices[curColStart + this.normalIndex + 1] = vertices[nextColStart + this.normalIndex + 1] ?? -1
+        vertices[curColStart + this.normalIndex + 2] = vertices[nextColStart + this.normalIndex + 2] ?? -1
       }
     }
 
     // Assign heights to "new" vertices.
-    const lastRowStart = (rows - 2) * columns * this.componentsPerVertex
+    const lastRow = rows - 1
+    const lastRowStart = lastRow * columns * this.componentsPerVertex
     for (let col = 0; col < columns; col++) {
-      const index = lastRowStart + col * this.componentsPerVertex + this.heightIndex
-      vertices[index] = data[col] ?? -1
+      const colStart = lastRowStart + col * this.componentsPerVertex
+      vertices[colStart + this.heightIndex] = data[col] ?? -1
     }
 
     // Recalculate normals.
     // Imagine going from top to bottom (rows), left to right (columns).
-    for (let row = 1; row < rows - 1; row++) {
-      const topStart = (row - 1) * columns * this.componentsPerVertex
-      const bottomStart = (row + 1) * columns * this.componentsPerVertex
+    const prevStart = (lastRow - 1) * columns * this.componentsPerVertex
+    const thisStart = lastRow * columns * this.componentsPerVertex
 
-      const currentRowStart = row * columns * this.componentsPerVertex
-      for (let col = 1; col < columns - 1; col++) {
-        const leftStart = currentRowStart + (col - 1) * this.componentsPerVertex
-        const rightStart = currentRowStart + (col + 1) * this.componentsPerVertex
+    for (let col = 0; col < columns; col++) {
+      const leftStart = col !== 0
+        ? lastRowStart + (col - 1) * this.componentsPerVertex
+        : lastRowStart + col * this.componentsPerVertex
 
-        const currentNormal = currentRowStart + col * this.componentsPerVertex + this.normalStartIndex
+      const rightStart = col !== columns - 1
+        ? lastRowStart + (col + 1) * this.componentsPerVertex
+        : lastRowStart + col * this.componentsPerVertex
 
-        const topV = new Vector3(vertices[topStart] ?? 0, vertices[topStart + 1] ?? 0, vertices[topStart + 2] ?? 0)
-        const bottomV = new Vector3(vertices[bottomStart] ?? 0, vertices[bottomStart + 1] ?? 0, vertices[bottomStart + 2] ?? 0)
+      const colStart = lastRowStart + col * this.componentsPerVertex
 
-        const leftV = new Vector3(vertices[leftStart] ?? 0, vertices[leftStart + 1] ?? 0, vertices[leftStart + 2] ?? 0)
-        const rightV = new Vector3(vertices[rightStart] ?? 0, vertices[rightStart + 1] ?? 0, vertices[rightStart + 2] ?? 0)
+      const topV = new Vector3(vertices[prevStart] ?? 0, vertices[prevStart + 1] ?? 0, vertices[prevStart + 2] ?? 0)
+      const thisV = new Vector3(vertices[thisStart] ?? 0, vertices[thisStart + 1] ?? 0, vertices[thisStart + 2] ?? 0)
+      const topToThis = topV.subtract(thisV)
 
-        const topToBottom = topV.subtract(bottomV)
-        const leftToRight = leftV.subtract(rightV)
+      const leftV = new Vector3(vertices[leftStart] ?? 0, vertices[leftStart + 1] ?? 0, vertices[leftStart + 2] ?? 0)
+      const rightV = new Vector3(vertices[rightStart] ?? 0, vertices[rightStart + 1] ?? 0, vertices[rightStart + 2] ?? 0)
+      const leftToRight = leftV.subtract(rightV)
 
-        const normals = leftToRight.cross(topToBottom)
+      const normals = leftToRight.cross(topToThis).normalize()
 
-        vertices[currentNormal] = normals.x
-        vertices[currentNormal + 1] = normals.y
-        vertices[currentNormal + 2] = normals.z
-      }
+      vertices[colStart + this.normalIndex] = normals.x
+      vertices[colStart + this.normalIndex + 1] = normals.y
+      vertices[colStart + this.normalIndex + 2] = normals.z
     }
   }
 }

@@ -1,4 +1,26 @@
 /**
+ * Options for creating MicrophoneInput.
+ */
+export interface Options {
+  /**
+   * Window size of Fast Fourier Transform (between 32 and 32768, default is 2048).
+   */
+  fftSize?: number
+  /**
+   * Averaging constant with the last analysis frame (between 0 and 1, default is 0.8).
+   */
+  smoothingTimeConstant?: number
+  /**
+   * Minimum power value in the scaling range for the FFT analysis data, for conversion to unsigned byte values.
+   */
+  minDecibels?: number
+  /**
+   * Maximum power value in the scaling range for the FFT analysis data, for conversion to unsigned byte values.
+   */
+  maxDecibels?: number
+}
+
+/**
  * Microphone input reader.
  */
 export class MicrophoneInput {
@@ -14,11 +36,10 @@ export class MicrophoneInput {
 
   /**
    * Create microphone input reader for media device.
-   * @param fftSize Window size of Fast Fourier Transform (between 32 and 32768, default is 2048).
-   * @param smoothingTimeConstant Averaging constant with the last analysis frame (between 0 and 1, default is 0.8).
+   * @param options
    * @returns
    */
-  static async create (fftSize?: number, smoothingTimeConstant?: number) {
+  static async create (options: Options) {
     let stream: MediaStream
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -33,12 +54,20 @@ export class MicrophoneInput {
 
     source.connect(analyzer)
 
-    if (fftSize !== undefined) {
-      analyzer.fftSize = fftSize
+    if (options.fftSize !== undefined) {
+      analyzer.fftSize = options.fftSize
     }
 
-    if (smoothingTimeConstant !== undefined) {
-      analyzer.smoothingTimeConstant = smoothingTimeConstant
+    if (options.smoothingTimeConstant !== undefined) {
+      analyzer.smoothingTimeConstant = options.smoothingTimeConstant
+    }
+
+    if (options.minDecibels !== undefined) {
+      analyzer.minDecibels = options.minDecibels
+    }
+
+    if (options.maxDecibels !== undefined) {
+      analyzer.maxDecibels = options.maxDecibels
     }
 
     const array = new Uint8Array(analyzer.frequencyBinCount)
