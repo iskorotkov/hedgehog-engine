@@ -29,7 +29,9 @@ const scrollInterval = 50
 
 const micOptions: Options = {
   fftSize: dimensions.cols * 2,
-  smoothingTimeConstant: 0.8
+  smoothingTimeConstant: 0.85,
+  minDecibels: -90,
+  maxDecibels: -10
 }
 
 const graphHeightsRange = {
@@ -38,7 +40,7 @@ const graphHeightsRange = {
 }
 
 const graphColors = {
-  min: new Vector4(20, 92, 145, 255),
+  min: new Vector4(67, 171, 84, 255),
   max: new Vector4(252, 49, 3, 255)
 }
 

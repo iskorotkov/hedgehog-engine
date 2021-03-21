@@ -69,15 +69,15 @@ export class GridScroll {
 
       const colStart = lastRowStart + col * this.componentsPerVertex
 
-      const topV = new Vector3(vertices[prevStart] ?? 0, vertices[prevStart + 1] ?? 0, vertices[prevStart + 2] ?? 0)
+      const prevV = new Vector3(vertices[prevStart] ?? 0, vertices[prevStart + 1] ?? 0, vertices[prevStart + 2] ?? 0)
       const thisV = new Vector3(vertices[thisStart] ?? 0, vertices[thisStart + 1] ?? 0, vertices[thisStart + 2] ?? 0)
-      const topToThis = topV.subtract(thisV)
+      const prevToThis = prevV.subtract(thisV)
 
       const leftV = new Vector3(vertices[leftStart] ?? 0, vertices[leftStart + 1] ?? 0, vertices[leftStart + 2] ?? 0)
       const rightV = new Vector3(vertices[rightStart] ?? 0, vertices[rightStart + 1] ?? 0, vertices[rightStart + 2] ?? 0)
       const leftToRight = leftV.subtract(rightV)
 
-      const normals = leftToRight.cross(topToThis).normalize()
+      const normals = leftToRight.cross(prevToThis).normalize()
 
       vertices[colStart + this.normalIndex] = normals.x
       vertices[colStart + this.normalIndex + 1] = normals.y
