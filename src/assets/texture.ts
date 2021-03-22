@@ -11,7 +11,7 @@ export class Texture {
    */
   constructor (
     public readonly path: string,
-    public readonly fallback: Vector4 = new Vector4(255, 192, 203, 255)
+    public readonly fallback: Vector4 = new Vector4(255, 255, 255, 255)
   ) {
   }
 

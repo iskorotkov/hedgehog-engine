@@ -3,7 +3,7 @@ import { VertexShader } from './vertexShader'
 /**
  * Vertex shader that displays vertices as a 3D mesh.
  */
-export const volumetricTextureShader = new VertexShader(`
+export const heightShader = new VertexShader(`
 precision highp float;
 precision lowp int;
 
@@ -17,6 +17,7 @@ uniform mat3 u_n;
 
 varying vec3 v_normal;
 varying vec3 v_position;
+varying vec3 v_original_position;
 varying vec2 v_uv;
 
 void main()
@@ -26,6 +27,7 @@ void main()
     v_normal = u_n * normalize(a_normal);
     v_position = vec3(u_mv * p0);
     v_uv = a_uv;
+    v_original_position = a_position;
     gl_Position = u_mvp * p0;
 }
 `.trim())

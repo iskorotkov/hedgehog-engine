@@ -21,8 +21,8 @@ export class CompiledProgram2D implements CompiledProgram {
     private readonly program: WebGLProgram,
     private readonly position: number,
     private readonly uv: number,
-    public readonly diffuseTexture: WebGLTexture | null,
-    public readonly specularTexture: WebGLTexture | null,
+    public readonly diffuseTexture: Texture,
+    public readonly specularTexture: Texture,
     public readonly diffuseTexBuffer: WebGLUniformLocation | null,
     public readonly specularTexBuffer: WebGLUniformLocation | null,
     public readonly mvp: WebGLUniformLocation | null,
@@ -49,11 +49,11 @@ export class CompiledProgram2D implements CompiledProgram {
     gl.enableVertexAttribArray(this.uv)
 
     gl.activeTexture(gl.TEXTURE0 + 0)
-    gl.bindTexture(gl.TEXTURE_2D, this.diffuseTexture)
+    gl.bindTexture(gl.TEXTURE_2D, this.diffuseTexture.load(gl))
     gl.uniform1i(this.diffuseTexBuffer, 0)
 
     gl.activeTexture(gl.TEXTURE0 + 1)
-    gl.bindTexture(gl.TEXTURE_2D, this.specularTexture)
+    gl.bindTexture(gl.TEXTURE_2D, this.specularTexture.load(gl))
     gl.uniform1i(this.specularTexBuffer, 1)
 
     gl.drawElements(gl.TRIANGLES, model.indexCount, gl.UNSIGNED_SHORT, 0)
@@ -85,11 +85,11 @@ export class CompiledProgram2D implements CompiledProgram {
     gl.uniformMatrix3fv(this.n, false, n.values)
 
     gl.activeTexture(gl.TEXTURE0 + 0)
-    gl.bindTexture(gl.TEXTURE_2D, this.diffuseTexture)
+    gl.bindTexture(gl.TEXTURE_2D, this.diffuseTexture.load(gl))
     gl.uniform1i(this.diffuseTexBuffer, 0)
 
     gl.activeTexture(gl.TEXTURE0 + 1)
-    gl.bindTexture(gl.TEXTURE_2D, this.specularTexture)
+    gl.bindTexture(gl.TEXTURE_2D, this.specularTexture.load(gl))
     gl.uniform1i(this.specularTexBuffer, 1)
 
     gl.drawElements(gl.TRIANGLES, actor.model.indexCount, gl.UNSIGNED_SHORT, 0)
@@ -104,10 +104,14 @@ export class Program2D implements Program {
    *
    */
   constructor (
-    public readonly diffuseTexture: Texture,
-    public readonly specularTexture: Texture
+    private readonly diffuseTexture: Texture,
+    private readonly specularTexture: Texture
   ) {
   }
+
+  private cachedProgram: CompiledProgram | null = null
+  private cachedVertex: CompiledVertexShader | null = null
+  private cachedFragment: CompiledFragmentShader | null = null
 
   /**
    * Returns already compiled shader program for 2D models with specular color.
@@ -116,33 +120,38 @@ export class Program2D implements Program {
    * @param fragment Fragment shader to use.
    */
   compile (gl: WebGLRenderingContext, vertex: CompiledVertexShader, fragment: CompiledFragmentShader): CompiledProgram {
-    const shaderProgram = gl.createProgram()
-    if (!shaderProgram) {
-      throw new Error('couldn\'t create shader program')
+    if (!this.cachedProgram ||
+      vertex !== this.cachedVertex ||
+      fragment !== this.cachedFragment) {
+      const shaderProgram = gl.createProgram()
+      if (!shaderProgram) {
+        throw new Error('couldn\'t create shader program')
+      }
+
+      gl.attachShader(shaderProgram, vertex.shader)
+      gl.attachShader(shaderProgram, fragment.shader)
+      gl.linkProgram(shaderProgram)
+
+      if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+        throw new Error('couldn\'t link shader program')
+      }
+
+      const position = gl.getAttribLocation(shaderProgram, 'a_position')
+      const uv = gl.getAttribLocation(shaderProgram, 'a_uv')
+
+      const mvp = gl.getUniformLocation(shaderProgram, 'u_mvp')
+      const mv = gl.getUniformLocation(shaderProgram, 'u_mv')
+      const n = gl.getUniformLocation(shaderProgram, 'u_n')
+      const diffuseTexBuffer = gl.getUniformLocation(shaderProgram, 'u_diffuseColor')
+      const specularTexBuffer = gl.getUniformLocation(shaderProgram, 'u_specularColor')
+
+      this.cachedVertex = vertex
+      this.cachedFragment = fragment
+      this.cachedProgram = new CompiledProgram2D(shaderProgram, position, uv,
+        this.diffuseTexture, this.specularTexture,
+        diffuseTexBuffer, specularTexBuffer, mvp, mv, n)
     }
 
-    gl.attachShader(shaderProgram, vertex.shader)
-    gl.attachShader(shaderProgram, fragment.shader)
-    gl.linkProgram(shaderProgram)
-
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-      throw new Error('couldn\'t link shader program')
-    }
-
-    const diffuseTexture = this.diffuseTexture.load(gl)
-    const specularTexture = this.specularTexture.load(gl)
-
-    const position = gl.getAttribLocation(shaderProgram, 'a_position')
-    const uv = gl.getAttribLocation(shaderProgram, 'u_uv')
-
-    const mvp = gl.getUniformLocation(shaderProgram, 'u_mvp')
-    const mv = gl.getUniformLocation(shaderProgram, 'u_mv')
-    const n = gl.getUniformLocation(shaderProgram, 'u_n')
-    const diffuseTexBuffer = gl.getUniformLocation(shaderProgram, 'u_diffuseColor')
-    const specularTexBuffer = gl.getUniformLocation(shaderProgram, 'u_specularColor')
-
-    return new CompiledProgram2D(shaderProgram, position, uv,
-      diffuseTexture, specularTexture,
-      diffuseTexBuffer, specularTexBuffer, mvp, mv, n)
+    return this.cachedProgram
   }
 }
