@@ -40,7 +40,7 @@ export class GridScroll {
 
         vertices[curColStart + this.positionIndex + 1] = vertices[nextColStart + this.positionIndex + 1] ?? 0
         vertices[curColStart + this.normalIndex + 0] = vertices[nextColStart + this.normalIndex] ?? 0
-        vertices[curColStart + this.normalIndex + 1] = vertices[nextColStart + this.normalIndex + 1] ?? 1
+        vertices[curColStart + this.normalIndex + 1] = vertices[nextColStart + this.normalIndex + 1] ?? 0
         vertices[curColStart + this.normalIndex + 2] = vertices[nextColStart + this.normalIndex + 2] ?? 0
       }
     }
@@ -50,8 +50,7 @@ export class GridScroll {
     const lastRowStart = (rows - 1) * columns * this.componentsPerVertex
     for (let col = 0; col < columns; col++) {
       const colStart = lastRowStart + col * this.componentsPerVertex
-      const height = data[col] ?? 0
-      vertices[colStart + this.positionIndex + 1] = height > 0.1 ? height : 0
+      vertices[colStart + this.positionIndex + 1] = data[col] ?? 0
     }
 
     // Calculate normals for new points.
