@@ -80,7 +80,7 @@ function setupMenu () {
 }
 
 const graphModel = gridModel(dimensions, '3d', 'add')
-const gridScroll = new GridScroll(graphModel, 8, 1, 3)
+const gridScroll = new GridScroll(graphModel, 8, 0, 3)
 
 let microphoneInput: MicrophoneInput | null = null
 MicrophoneInput.create(micOptions).then(input => {

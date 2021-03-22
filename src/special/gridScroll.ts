@@ -9,13 +9,13 @@ export class GridScroll {
    * Returns GridScroll.
    * @param model Model to scroll.
    * @param componentsPerVertex Number of components per vertex.
-   * @param heightIndex Index of height component to scroll.
+   * @param positionIndex Index of the first position component (x) to scroll.
    * @param normalIndex Index of the first normal component (x) to scroll.
    */
   constructor (
       private readonly model: SimpleModel,
       private readonly componentsPerVertex: number,
-      private readonly heightIndex: number,
+      private readonly positionIndex: number,
       private readonly normalIndex: number
   ) {
   }
@@ -38,34 +38,34 @@ export class GridScroll {
         const curColStart = curRowStart + col * this.componentsPerVertex
         const nextColStart = nextRowStart + col * this.componentsPerVertex
 
-        vertices[curColStart + this.heightIndex] = vertices[nextColStart + this.heightIndex] ?? -1
-        vertices[curColStart + this.normalIndex + 0] = vertices[nextColStart + this.normalIndex] ?? -1
-        vertices[curColStart + this.normalIndex + 1] = vertices[nextColStart + this.normalIndex + 1] ?? -1
-        vertices[curColStart + this.normalIndex + 2] = vertices[nextColStart + this.normalIndex + 2] ?? -1
+        vertices[curColStart + this.positionIndex + 1] = vertices[nextColStart + this.positionIndex + 1] ?? 0
+        vertices[curColStart + this.normalIndex + 0] = vertices[nextColStart + this.normalIndex] ?? 0
+        vertices[curColStart + this.normalIndex + 1] = vertices[nextColStart + this.normalIndex + 1] ?? 1
+        vertices[curColStart + this.normalIndex + 2] = vertices[nextColStart + this.normalIndex + 2] ?? 0
       }
     }
 
     // Assign heights to "new" vertices.
-    const lastRow = rows - 1
-    const lastRowStart = lastRow * columns * this.componentsPerVertex
+    const preLastRowStart = (rows - 2) * columns * this.componentsPerVertex
+    const lastRowStart = (rows - 1) * columns * this.componentsPerVertex
     for (let col = 0; col < columns; col++) {
       const colStart = lastRowStart + col * this.componentsPerVertex
-      vertices[colStart + this.heightIndex] = data[col] ?? -1
+      const height = data[col] ?? 0
+      vertices[colStart + this.positionIndex + 1] = height > 0.1 ? height : 0
     }
 
-    // Recalculate normals.
-    // Imagine going from top to bottom (rows), left to right (columns).
-    const prevStart = (lastRow - 1) * columns * this.componentsPerVertex
-    const thisStart = lastRow * columns * this.componentsPerVertex
-
+    // Calculate normals for new points.
     for (let col = 0; col < columns; col++) {
+      const prevStart = preLastRowStart + col * this.componentsPerVertex + this.positionIndex
+      const thisStart = lastRowStart + col * this.componentsPerVertex + this.positionIndex
+
       const leftStart = col !== 0
-        ? lastRowStart + (col - 1) * this.componentsPerVertex
-        : lastRowStart + col * this.componentsPerVertex
+        ? lastRowStart + (col - 1) * this.componentsPerVertex + this.positionIndex
+        : lastRowStart + col * this.componentsPerVertex + this.positionIndex
 
       const rightStart = col !== columns - 1
-        ? lastRowStart + (col + 1) * this.componentsPerVertex
-        : lastRowStart + col * this.componentsPerVertex
+        ? lastRowStart + (col + 1) * this.componentsPerVertex + this.positionIndex
+        : lastRowStart + col * this.componentsPerVertex + this.positionIndex
 
       const colStart = lastRowStart + col * this.componentsPerVertex
 
