@@ -4,15 +4,22 @@
   margin: 0.2em;
 }
 
+// Document
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: #333;
+}
+
 // Main
 
 main {
-  display: flex;
-  flex-flow: row wrap;
-
-  > * {
-    flex: 1;
-  }
+  text-align: center;
 }
 
 // Canvas
