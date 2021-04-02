@@ -8,7 +8,7 @@ interface Map {
 }
 
 export class MouseClicks {
-    listeners: Map = {}
+    private listeners: Map = {}
 
     constructor (elementID: string) {
       const canvas = document.getElementById(elementID) as HTMLCanvasElement
