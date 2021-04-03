@@ -1,52 +1,12 @@
 import { Vector2 } from '../math/vector'
 
 /**
- * Returns point on Bezier curve.
- * @param points Array of all points.
- * @param firstPoint Index of point to start drawing from.
- * @param t Split ratio in range [0..1].
- * @returns Point on curve.
- */
-export function getPointOnBezierCurve (points: Vector2[], firstPoint: number, t: number) {
-  const invT = 1 - t
-
-  const p1 = points[firstPoint] ?? new Vector2(0, 0)
-  const p2 = points[firstPoint + 1] ?? new Vector2(0, 0)
-  const p3 = points[firstPoint + 2] ?? new Vector2(0, 0)
-  const p4 = points[firstPoint + 3] ?? new Vector2(0, 0)
-
-  return p1.multiply(new Vector2(invT * invT * invT, invT * invT * invT))
-    .add(p2.multiply(new Vector2(3 * t * invT * invT, 3 * t * invT * invT)))
-    .add(p3.multiply(new Vector2(3 * invT * t * t, 3 * invT * t * t)))
-    .add(p4.multiply(new Vector2(t * t * t, t * t * t)))
-}
-
-/**
- * Returns points on Bezier curve.
- * @param points Array of all points.
- * @param firstPoint Index of point to start drawing from.
- * @param numPoints Number of points to draw on each subcurve.
- * @returns Points on Bezier curve.
- */
-export function getPointsOnBezierCurve (points: Vector2[], firstPoint: number, numPoints: number) {
-  const outPoints = []
-
-  for (let i = 0; i < numPoints; ++i) {
-    const t = i / (numPoints - 1)
-    const p = getPointOnBezierCurve(points, firstPoint, t)
-    outPoints.push(p)
-  }
-
-  return outPoints
-}
-
-/**
  * Calculates flatness for 4 points.
  * @param points Array of all points.
  * @param firstPoint Index of point to start calculating flatness.
  * @returns Flatness for 4 points.
  */
-export function flatness (points: Vector2[], firstPoint: number) {
+function flatness (points: Vector2[], firstPoint: number) {
   const p1 = points[firstPoint + 0] ?? new Vector2(0, 0)
   const p2 = points[firstPoint + 1] ?? new Vector2(0, 0)
   const p3 = points[firstPoint + 2] ?? new Vector2(0, 0)
@@ -77,7 +37,7 @@ export function flatness (points: Vector2[], firstPoint: number) {
  * @param newPoints Points that will be used as return value.
  * @returns Points on Bezier curve.
  */
-export function getPointsOnBezierCurveWithSplitting (points: Vector2[], firstPoint: number, tolerance: number, newPoints?: Vector2[]) {
+function getPointsOnBezierCurveWithSplitting (points: Vector2[], firstPoint: number, tolerance: number, newPoints?: Vector2[]) {
   const outPoints = newPoints || []
 
   if (flatness(points, firstPoint) < tolerance) {
@@ -127,7 +87,7 @@ export function getPointsOnBezierCurveWithSplitting (points: Vector2[], firstPoi
  * @param newPoints Points that will be used as return value.
  * @returns Points on Bezier curve.
  */
-export function simplifyPoints (points: Vector2[], start: number, end: number, epsilon: number, newPoints?: Vector2[]) {
+function simplifyPoints (points: Vector2[], start: number, end: number, epsilon: number, newPoints?: Vector2[]) {
   const outPoints = newPoints || []
 
   // find the most distance point from the endpoints
@@ -185,7 +145,7 @@ export function simplifyPoints (points: Vector2[], start: number, end: number, e
  * @param tolerance Curve splitting tolerance.
  * @returns Points on Bezier curves.
  */
-export function getPointsOnBezierCurves (points: Vector2[], tolerance: number) {
+function getPointsOnBezierCurves (points: Vector2[], tolerance: number) {
   const newPoints: Vector2[] = []
   const numSegments = (points.length - 1) / 3
 
@@ -195,4 +155,23 @@ export function getPointsOnBezierCurves (points: Vector2[], tolerance: number) {
   }
 
   return newPoints
+}
+
+/**
+ * Find points laying on Bezier curve.
+ * @param points Array of all points.
+ * @param tolerance Curve splitting tolerance.
+ * @param distance Min distance between points.
+ * @returns Returns array of points laying on Bezier curve.
+ */
+export function bezierCurve (points: Vector2[], tolerance: number, distance: number) {
+  if (points.length < 4) {
+    return []
+  }
+
+  const finished = points.slice(0, points.length - (points.length - 1) % 3)
+  const curve = getPointsOnBezierCurves(finished, tolerance)
+  const simplified = simplifyPoints(curve, 0, curve.length, distance)
+
+  return simplified
 }

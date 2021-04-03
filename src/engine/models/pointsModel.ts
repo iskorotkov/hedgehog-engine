@@ -1,53 +1,48 @@
 import { Model } from './model'
 import { SimpleModel } from './simpleModel'
-import { Vector2 } from '../../math/vector'
-import { getPointsOnBezierCurves, simplifyPoints } from '../../special/bezierCurve'
+import { Vector2, Vector3 } from '../../math/vector'
+import { bezierCurve } from '../../special/bezierCurve'
+import { revolutionBody } from '../../special/revolutionBody'
 
 export class PointsModel {
-    private point: Vector2[]
+    private points: Vector2[]
 
     constructor (points?: Vector2[]) {
-      this.point = points ?? []
+      this.points = points ?? []
     }
 
     addPoint (p: Vector2) {
-      this.point.push(p)
+      this.points.push(p)
     }
 
     removePoint (p: Vector2) {
-      const index = this.point.lastIndexOf(p)
+      const index = this.points.lastIndexOf(p)
       if (index >= 0) {
-        this.point = this.point.splice(index, 1)
+        this.points = this.points.splice(index, 1)
       }
     }
 
-    count () {
-      return this.point.length
+    bezierCurveAsSquares (tolerance: number, distance: number, size: number) {
+      const curve = bezierCurve(this.points, tolerance, distance)
+      return new PointsModel(curve).squares(size)
     }
 
-    bezierCurve (tolerance: number, distance: number, size: number): Model {
-      if (this.point.length < 4) {
-        return new SimpleModel([], [])
-      }
-
-      const points = this.point.slice(0, this.point.length - (this.point.length - 1) % 3)
-      const curve = getPointsOnBezierCurves(points, tolerance)
-      const simplified = simplifyPoints(curve, 0, curve.length, distance)
-
-      return new PointsModel(simplified).lines(size)
+    bezierCurveAsLines (tolerance: number, distance: number, size: number) {
+      const curve = bezierCurve(this.points, tolerance, distance)
+      return new PointsModel(curve).lines(size)
     }
 
     lines (width: number): Model {
-      if (this.point.length < 2) {
+      if (this.points.length < 2) {
         return new SimpleModel([], [])
       }
 
       const vertices = []
       const indices = []
 
-      for (let i = 0; i < this.point.length - 1; i++) {
-        const thisPoint = this.point[i]
-        const nextPoint = this.point[i + 1]
+      for (let i = 0; i < this.points.length - 1; i++) {
+        const thisPoint = this.points[i]
+        const nextPoint = this.points[i + 1]
 
         if (!thisPoint || !nextPoint) {
           throw Error()
@@ -83,7 +78,7 @@ export class PointsModel {
 
       let verticesInserted = 0
 
-      for (const point of this.point) {
+      for (const point of this.points) {
         vertices.push(
           point.x - size / 2, point.y - size / 2, 0, 0,
           point.x - size / 2, point.y + size / 2, 0, 1,
@@ -100,5 +95,10 @@ export class PointsModel {
       }
 
       return new SimpleModel(vertices, indices)
+    }
+
+    revolutionBody (tolerance: number, distance: number, axis: Vector3, segments: number, cap: boolean) {
+      const curve = bezierCurve(this.points, tolerance, distance)
+      return revolutionBody(curve, axis, segments, cap)
     }
 }

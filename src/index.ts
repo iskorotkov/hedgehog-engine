@@ -11,6 +11,7 @@ import { volumetricTextureShader as vertexShader } from './engine/shaders/vertex
 import { MouseClicks } from './input/mouseClicks'
 import { PointsModel } from './engine/models/pointsModel'
 import { Program2D } from './engine/programs/program2d'
+import { Program3D } from './engine/programs/program3d'
 
 const box: BoundingBox = { near: 0.001, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
 const cameraTransform = new Transform(new Vector3(0, 0, 1), new Vector3(0, 0, 0), new Vector3(1, 1, 1))
@@ -39,7 +40,7 @@ mouseClicks.addEventListener('line', pos => {
  */
 function compose () {
   const curve = new Actor(
-    bezierCurveModel.bezierCurve(0.01, 0.01, 0.05),
+    bezierCurveModel.bezierCurveAsLines(0.01, 0.01, 0.05),
     new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
     new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
     vertexShader,
@@ -54,7 +55,15 @@ function compose () {
     fragmentShader(new Vector3(0, 0, 0), camera.view(), 1_000_000)
   )
 
-  engine.compose([curve, squares])
+  const shape = new Actor(
+    bezierCurveModel.revolutionBody(0.01, 0.01, new Vector3(0, 1, 0), 10, false),
+    new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
+    new Program3D(new Texture('', new Vector4(255, 0, 0, 255)), new Texture('')),
+    vertexShader,
+    fragmentShader(new Vector3(0, 0, 0), camera.view(), 1_000_000)
+  )
+
+  engine.compose([curve, squares, shape])
 }
 
 /**
