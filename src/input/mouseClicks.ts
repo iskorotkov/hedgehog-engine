@@ -1,10 +1,7 @@
-export interface ClickPosition {
-    x: number,
-    y: number
-}
+import { Vector2 } from '../math/vector'
 
 interface Map {
-    [key: string]: ((position: ClickPosition) => void) | undefined
+    [key: string]: ((position: Vector2) => void) | undefined
 }
 
 export class MouseClicks {
@@ -24,7 +21,7 @@ export class MouseClicks {
         const clipX = x / rect.width * 2 - 1
         const clipY = y / rect.height * -2 + 1
 
-        const position = { x: clipX, y: clipY }
+        const position = new Vector2(clipX, clipY)
 
         for (const key of Object.keys(this.listeners)) {
           const callback = this.listeners[key]
@@ -35,7 +32,7 @@ export class MouseClicks {
       })
     }
 
-    addEventListener (key: string, callback: (position: ClickPosition) => void) {
+    addEventListener (key: string, callback: (position: Vector2) => void) {
       this.listeners[key] = callback
     }
 
