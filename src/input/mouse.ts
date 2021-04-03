@@ -1,11 +1,9 @@
 import { Vector2 } from '../math/vector'
 
-interface Map {
-    [key: string]: ((position: Vector2) => void) | undefined
-}
+export type Callback = (position: Vector2) => void
 
-export class MouseClicks {
-    private listeners: Map = {}
+export class Mouse {
+    private listeners: Callback[] = []
 
     constructor (elementID: string) {
       const canvas = document.getElementById(elementID) as HTMLCanvasElement
@@ -23,20 +21,15 @@ export class MouseClicks {
 
         const position = new Vector2(clipX, clipY)
 
-        for (const key of Object.keys(this.listeners)) {
-          const callback = this.listeners[key]
-          if (callback) {
-            callback(position)
-          }
-        }
+        this.listeners.forEach(callback => callback(position))
       })
     }
 
-    addEventListener (key: string, callback: (position: Vector2) => void) {
-      this.listeners[key] = callback
+    addEventListener (callback: Callback) {
+      this.listeners.push(callback)
     }
 
-    removeEventListener (key: string) {
-      this.listeners[key] = undefined
+    removeEventListener (callback: Callback) {
+      this.listeners = this.listeners.filter(c => c !== callback)
     }
 }

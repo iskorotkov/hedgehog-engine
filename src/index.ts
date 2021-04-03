@@ -8,22 +8,42 @@ import { Actor } from './engine/world/actor'
 import { Texture } from './assets/texture'
 import { volumetricTextureGammaCorrectedShader as fragmentShader } from './engine/shaders/fragment/volumetricTextureGammaCorrectedShader'
 import { volumetricTextureShader as vertexShader } from './engine/shaders/vertex/volumetricTextureShader'
-import { MouseClicks } from './input/mouseClicks'
+import { Mouse } from './input/mouse'
 import { PointsModel } from './engine/models/pointsModel'
 import { Program2D } from './engine/programs/program2d'
 import { Program3D } from './engine/programs/program3d'
+import { Keyboard } from './input/keyboard'
 
-const box: BoundingBox = { near: 0.001, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
-const cameraTransform = new Transform(new Vector3(0, 0, 1), new Vector3(0, 0, 0), new Vector3(1, 1, 1))
-const camera = new ParallelProjectionCamera(cameraTransform, box)
+const keyboard = new Keyboard()
 
-const renderer = new VolumetricRenderer(camera, new Vector3(0.5, 0.5, 0.5))
-const engine = new Engine('canvas', renderer).init()
+const cameraPosition = new Vector3(0, 0, 10)
+const movementSpeed = 1
 
-const bezierCurveModel = new PointsModel()
+keyboard.addEventListener('KeyW', () => {
+  cameraPosition.y += movementSpeed
+  compose()
+})
 
-const mouseClicks = new MouseClicks('canvas')
-mouseClicks.addEventListener('line', pos => {
+keyboard.addEventListener('KeyS', () => {
+  cameraPosition.y -= movementSpeed
+  compose()
+})
+
+const shapeRotation = new Vector3(0, 0, 0)
+const rotationSpeed = 15
+
+keyboard.addEventListener('KeyA', () => {
+  shapeRotation.y += rotationSpeed
+  compose()
+})
+
+keyboard.addEventListener('KeyD', () => {
+  shapeRotation.y -= rotationSpeed
+  compose()
+})
+
+const mouse = new Mouse('canvas')
+mouse.addEventListener(pos => {
   // Scale positions.
   pos.x *= (box.right - box.left) / 2
   pos.y *= (box.top - box.bottom) / 2
@@ -34,6 +54,15 @@ mouseClicks.addEventListener('line', pos => {
 
   compose()
 })
+
+const box: BoundingBox = { near: 0.001, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
+const cameraTransform = new Transform(cameraPosition, new Vector3(0, 0, 0), new Vector3(1, 1, 1))
+const camera = new ParallelProjectionCamera(cameraTransform, box)
+
+const renderer = new VolumetricRenderer(camera, new Vector3(0.5, 0.5, 0.5))
+const engine = new Engine('canvas', renderer).init()
+
+const bezierCurveModel = new PointsModel()
 
 /**
  * Create and compose the scene.
@@ -57,7 +86,7 @@ function compose () {
 
   const shape = new Actor(
     bezierCurveModel.revolutionBody(0.01, 0.01, new Vector3(0, 1, 0), 10, false),
-    new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
+    new Transform(new Vector3(0, 0, 0), shapeRotation, new Vector3(1, 1, 1)),
     new Program3D(new Texture('', new Vector4(255, 0, 0, 255)), new Texture('')),
     vertexShader,
     fragmentShader(new Vector3(0, 0, 0), camera.view(), 1_000_000)

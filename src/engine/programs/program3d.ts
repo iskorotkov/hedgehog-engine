@@ -69,15 +69,6 @@ export class CompiledProgram3D implements CompiledProgram {
     const mvp = p.multiply(mv)
     const n = mv.toMatrix3().inverse().transpose()
 
-    console.info('matrices:', {
-      model: m,
-      view: v,
-      projection: p,
-      modelView: mv,
-      modelViewProjection: mvp,
-      normals: n
-    })
-
     gl.useProgram(this.program)
 
     gl.bindBuffer(gl.ARRAY_BUFFER, actor.model.vertices)
