@@ -30,20 +30,7 @@ export class PointsModel {
         return new SimpleModel([], [])
       }
 
-      const points = this._points.slice(0, 4)
-
-      for (let realPointIndex = 4; realPointIndex < this._points.length; realPointIndex++) {
-        const lastSupportPoint2 = this._points[realPointIndex - 3] ?? new Vector2(0, 0)
-        const lastSupportPoint1 = this._points[realPointIndex - 2] ?? new Vector2(0, 0)
-        const previousPoint = this._points[realPointIndex - 1] ?? new Vector2(0, 0)
-        const thisPoint = this._points[realPointIndex] ?? new Vector2(0, 0)
-
-        const nextSupportPoint1 = previousPoint.add(previousPoint.subtract(lastSupportPoint1))
-        const nextSupportPoint2 = previousPoint.add(previousPoint.subtract(lastSupportPoint2))
-
-        points.push(nextSupportPoint1, nextSupportPoint2, thisPoint)
-      }
-
+      const points = this._points.slice(0, this._points.length - (this._points.length - 1) % 3)
       const curve = getPointsOnBezierCurves(points, tolerance)
       const simplified = simplifyPoints(curve, 0, curve.length, distance)
 

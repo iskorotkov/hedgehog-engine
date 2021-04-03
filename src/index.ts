@@ -54,7 +54,7 @@ function compose () {
   console.log(bezierCurveModel.points())
 
   const curve = new Actor(
-    bezierCurveModel.bezierCurve(0.01, 0.01, 0.1),
+    bezierCurveModel.bezierCurve(0.001, 0.001, 0.1),
     new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
     new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
     vertexShader,
