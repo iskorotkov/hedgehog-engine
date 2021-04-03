@@ -4,46 +4,86 @@ import { Vector2 } from '../../math/vector'
 import { getPointsOnBezierCurves, simplifyPoints } from '../../special/bezierCurve'
 
 export class PointsModel {
-    private _points: Vector2[]
+    private point: Vector2[]
 
     constructor (points?: Vector2[]) {
-      this._points = points ?? []
+      this.point = points ?? []
     }
 
     addPoint (p: Vector2) {
-      this._points.push(p)
+      this.point.push(p)
     }
 
     removePoint (p: Vector2) {
-      const index = this._points.lastIndexOf(p)
+      const index = this.point.lastIndexOf(p)
       if (index >= 0) {
-        this._points = this._points.splice(index, 1)
+        this.point = this.point.splice(index, 1)
       }
     }
 
-    points () {
-      return this._points
+    count () {
+      return this.point.length
     }
 
     bezierCurve (tolerance: number, distance: number, size: number): Model {
-      if (this._points.length < 4) {
+      if (this.point.length < 4) {
         return new SimpleModel([], [])
       }
 
-      const points = this._points.slice(0, this._points.length - (this._points.length - 1) % 3)
+      const points = this.point.slice(0, this.point.length - (this.point.length - 1) % 3)
       const curve = getPointsOnBezierCurves(points, tolerance)
       const simplified = simplifyPoints(curve, 0, curve.length, distance)
 
-      return new PointsModel(simplified).squares(size)
+      return new PointsModel(simplified).lines(size)
+    }
+
+    lines (width: number): Model {
+      if (this.point.length < 2) {
+        return new SimpleModel([], [])
+      }
+
+      const vertices = []
+      const indices = []
+
+      for (let i = 0; i < this.point.length - 1; i++) {
+        const thisPoint = this.point[i]
+        const nextPoint = this.point[i + 1]
+
+        if (!thisPoint || !nextPoint) {
+          throw Error()
+        }
+
+        const direction = nextPoint.subtract(thisPoint)
+        const normal = new Vector2(-direction.y, direction.x)
+          .normalize()
+          .multiply(new Vector2(width / 2, width / 2))
+
+        const thisLeft = thisPoint.add(normal)
+        const thisRight = thisPoint.subtract(normal)
+        const nextLeft = nextPoint.add(normal)
+        const nextRight = nextPoint.subtract(normal)
+
+        for (const vec of [thisLeft, thisRight, nextRight, nextLeft]) {
+          vertices.push(vec.x, vec.y, 0, 0)
+        }
+
+        const base = i * 4
+        indices.push(
+          base, base + 1, base + 2,
+          base + 2, base + 3, base
+        )
+      }
+
+      return new SimpleModel(vertices, indices)
     }
 
     squares (size: number): Model {
-      const vertices: number[] = []
-      const indices: number[] = []
+      const vertices = []
+      const indices = []
 
       let verticesInserted = 0
 
-      for (const point of this._points) {
+      for (const point of this.point) {
         vertices.push(
           point.x - size / 2, point.y - size / 2, 0, 0,
           point.x - size / 2, point.y + size / 2, 0, 1,
