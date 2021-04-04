@@ -9,7 +9,7 @@ import { Vector3 } from '../../math/vector'
  * VolumetricRenderer draws with a depth buffer.
  */
 export class VolumetricRenderer implements Renderer {
-  constructor (private readonly camera: Camera, private readonly clearColor: Vector3) {
+  constructor (public camera: Camera, public clearColor: Vector3) {
   }
 
   drawActor (gl: WebGLRenderingContext, actor: PreparedActor): void {

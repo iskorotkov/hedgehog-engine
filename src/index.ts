@@ -22,12 +22,10 @@ const movementSpeed = 1
 
 keyboard.addEventListener('KeyW', () => {
   cameraPosition.y += movementSpeed
-  compose()
 })
 
 keyboard.addEventListener('KeyS', () => {
   cameraPosition.y -= movementSpeed
-  compose()
 })
 
 // TODO: Rotate camera, not shape (light must keep its position relative to shape).
@@ -36,12 +34,10 @@ const rotationSpeed = 15
 
 keyboard.addEventListener('KeyA', () => {
   shapeRotation.y += rotationSpeed
-  compose()
 })
 
 keyboard.addEventListener('KeyD', () => {
   shapeRotation.y -= rotationSpeed
-  compose()
 })
 
 const mouse = new Mouse('canvas')
@@ -59,9 +55,23 @@ mouse.addEventListener(pos => {
 
 const box: BoundingBox = { near: 0.001, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
 const cameraTransform = new Transform(cameraPosition, new Vector3(0, 0, 0), new Vector3(1, 1, 1))
-const camera = new ParallelProjectionCamera(cameraTransform, box)
 
-const renderer = new VolumetricRenderer(camera, new Vector3(0.5, 0.5, 0.5))
+// Switch cameras.
+
+const parallelCamera = new ParallelProjectionCamera(cameraTransform, box)
+
+let activeCamera: 'parallel' | 'perspective' = 'parallel'
+keyboard.addEventListener('KeyC', () => {
+  activeCamera = activeCamera === 'parallel' ? 'perspective' : 'parallel'
+
+  if (activeCamera === 'parallel') {
+    renderer.camera = parallelCamera
+  } else {
+    console.log('Perspective camera not implemented')
+  }
+})
+
+const renderer = new VolumetricRenderer(parallelCamera, new Vector3(0.5, 0.5, 0.5))
 const engine = new Engine('canvas', renderer).init()
 
 const bezierCurveModel = new PointsModel()
@@ -75,7 +85,7 @@ function compose () {
     new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
     new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
     vertexShader,
-    fragmentShader(new Vector3(0, 0, 0), camera.view(), 20)
+    fragmentShader(new Vector3(0, 0, 0), parallelCamera.view(), 20)
   )
 
   const squares = new Actor(
@@ -83,7 +93,7 @@ function compose () {
     new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
     new Program2D(new Texture('', new Vector4(255, 0, 0, 255)), new Texture('')),
     vertexShader,
-    fragmentShader(new Vector3(0, 0, 0), camera.view(), 20)
+    fragmentShader(new Vector3(0, 0, 0), parallelCamera.view(), 20)
   )
 
   const shape = new Actor(
@@ -91,7 +101,7 @@ function compose () {
     new Transform(new Vector3(0, 0, 0), shapeRotation, new Vector3(1, 1, 1)),
     new Program3D(new Texture('', new Vector4(255, 0, 0, 255)), new Texture('')),
     vertexShader,
-    fragmentShader(new Vector3(4, 4, 4), camera.view(), 20)
+    fragmentShader(new Vector3(4, 4, 4), parallelCamera.view(), 20)
   )
 
   engine.compose([curve, squares, shape])
