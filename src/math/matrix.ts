@@ -14,6 +14,16 @@ export interface BoundingBox {
 }
 
 /**
+ * Params for perspective projection.
+ */
+export interface PerspectiveParams {
+  viewAngle: Angle,
+  aspectRatio: number,
+  near: number,
+  far: number
+}
+
+/**
  * 2D square matrix.
  */
 export class Matrix2 {
@@ -452,6 +462,28 @@ export function parallelProject ({ left, right, top, bottom, far, near }: Boundi
 
 /**
  * Returns a perspective projection matrix.
+ * @param viewAngle Perspective view angle.
+ * @param aspectRatio Aspect ratio.
+ * @param near Near clip distance.
+ * @param far Far clip distance.
+ * @returns Perspective projection matrix.
+ */
+export function perspectiveProject ({ viewAngle, aspectRatio, near, far }: PerspectiveParams): Matrix4 {
+  const right = near * Math.tan(viewAngle.radians / 2)
+  const top = near * aspectRatio * Math.tan(viewAngle.radians / 2)
+
+  return perspectiveProjectFromBox({
+    left: -right,
+    right: right,
+    top: top,
+    bottom: -top,
+    far: far,
+    near: near
+  })
+}
+
+/**
+ * Returns a perspective projection matrix from BoundingBox.
  * @param left Left plane.
  * @param right Right plane.
  * @param top Top plane.
@@ -459,7 +491,7 @@ export function parallelProject ({ left, right, top, bottom, far, near }: Boundi
  * @param far Far plane.
  * @param near Near plane.
  */
-export function perspectiveProject ({ left, right, top, bottom, far, near }: BoundingBox): Matrix4 {
+export function perspectiveProjectFromBox ({ left, right, top, bottom, far, near }: BoundingBox): Matrix4 {
   return new Matrix4([
     2 * near / (right - left), 0, (right + left) / (right - left), 0,
     0, 2 * near / (top - bottom), (top + bottom) / (top - bottom), 0,

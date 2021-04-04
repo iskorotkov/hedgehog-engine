@@ -1,4 +1,4 @@
-import { BoundingBox, Matrix4 } from '../../math/matrix'
+import { Matrix4 } from '../../math/matrix'
 import { Transform } from '../world/transform'
 
 /**
@@ -6,7 +6,6 @@ import { Transform } from '../world/transform'
  */
 export interface Camera {
     transform: Transform
-    box: BoundingBox
 
     /**
      * Returns view matrix.
