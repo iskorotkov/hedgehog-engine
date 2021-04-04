@@ -27,6 +27,8 @@ export function revolutionBody (points: Vector2[], axis: Vector3, segments: numb
     return new SimpleModel([], [])
   }
 
+  axis = axis.normalize()
+
   const shape = pointsOnShape(points, axis, segments)
 
   const vertices = []
@@ -50,9 +52,6 @@ export function revolutionBody (points: Vector2[], axis: Vector3, segments: numb
   // Add indices.
   for (let segment = 0; segment < segments - 1; segment++) {
     for (let pt = 0; pt < points.length - 1; pt++) {
-      // TODO: Cap shape.
-      // TODO: Connect edge vertices.
-
       const v0 = segment * points.length + pt
       const v1 = segment * points.length + pt + 1
       const v2 = (segment + 1) * points.length + pt + 1
@@ -62,6 +61,74 @@ export function revolutionBody (points: Vector2[], axis: Vector3, segments: numb
         v0, v1, v2,
         v2, v3, v0
       )
+    }
+  }
+
+  // Cap edges.
+  for (let pt = 0; pt < points.length - 1; pt++) {
+    const v0 = pt
+    const v1 = pt + 1
+    const v2 = (segments - 1) * points.length + pt + 1
+    const v3 = (segments - 1) * points.length + pt
+
+    indices.push(
+      v0, v1, v2,
+      v2, v3, v0
+    )
+  }
+
+  // Cap top and bottom.
+  if (cap) {
+    // Add top vertex.
+    const topVertex = shape[0]
+    const bottomVertex = shape[points.length - 1]
+    if (!topVertex || !bottomVertex) {
+      throw Error()
+    }
+
+    if (axis.x !== 0 || axis.y !== 1 || axis.z !== 0) {
+      throw Error('Only capping on Y axis is supported')
+    }
+
+    topVertex.x = 0
+    topVertex.z = 0
+    bottomVertex.x = 0
+    bottomVertex.z = 0
+
+    const normal = new Vector3(0, 1, 0).multiply(axis)
+
+    // Top triangles.
+    vertices.push(topVertex.x, topVertex.y, topVertex.z, normal.x, normal.y, normal.z, 0, 1)
+    for (let segment = 0; segment < segments - 1; segment++) {
+      const v0 = segment * points.length
+      const v1 = (segment + 1) * points.length
+      const v2 = segments * points.length
+      indices.push(v0, v1, v2)
+    }
+
+    // Cap edges.
+    {
+      const v0 = (segments - 1) * points.length
+      const v1 = 0
+      const v2 = segments * points.length
+      indices.push(v0, v1, v2)
+    }
+
+    // Bottom trianges.
+    vertices.push(bottomVertex.x, bottomVertex.y, bottomVertex.z, -normal.x, -normal.y, -normal.z, 0, 0)
+    for (let segment = 0; segment < segments - 1; segment++) {
+      const v0 = (segment + 1) * points.length - 1
+      const v1 = (segment + 2) * points.length - 1
+      const v2 = segments * points.length + 1
+      indices.push(v0, v1, v2)
+    }
+
+    // Cap edges.
+    {
+      const v0 = segments * points.length - 1
+      const v1 = points.length - 1
+      const v2 = segments * points.length + 1
+      indices.push(v0, v1, v2)
     }
   }
 
