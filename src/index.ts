@@ -100,6 +100,8 @@ const engine = new Engine('canvas', renderer).init()
 
 const bezierCurveModel = new PointsModel()
 
+const shapeDiffuseTexture = new Texture('./resources/textures/frog.jpg', new Vector4(255, 0, 0, 255))
+
 /**
  * Create and compose the scene.
  */
@@ -123,7 +125,7 @@ function compose () {
   const shape = new Actor(
     bezierCurveModel.revolutionBody(0.01, 0.01, new Vector3(0, 1, 0), 10, true),
     new Transform(new Vector3(0, 0, 0), shapeRotation, new Vector3(1, 1, 1)),
-    new Program3D(new Texture('', new Vector4(255, 0, 0, 255)), new Texture('')),
+    new Program3D(shapeDiffuseTexture, new Texture('')),
     vertexShader,
     fragmentShader(new Vector3(4, 4, 4), parallelCamera.view(), 20)
   )

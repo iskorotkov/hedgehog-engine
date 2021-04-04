@@ -11,7 +11,7 @@ function rotatePoint (point: Vector2, rotation: Matrix4) {
 function pointsOnShape (points: Vector2[], axis: Vector3, segments: number) {
   const shapePoints = []
 
-  for (let i = 0; i < segments; i++) {
+  for (let i = 0; i <= segments; i++) {
     const angle = degrees(i * 360 / segments)
     const rotation = rotate(axis, angle)
 
@@ -35,7 +35,7 @@ export function revolutionBody (points: Vector2[], axis: Vector3, segments: numb
   const indices = []
 
   // Add vertices.
-  for (let segment = 0; segment < segments; segment++) {
+  for (let segment = 0; segment <= segments; segment++) {
     for (let pt = 0; pt < points.length; pt++) {
       const point = shape[segment * points.length + pt]
       if (!point) {
@@ -45,12 +45,16 @@ export function revolutionBody (points: Vector2[], axis: Vector3, segments: numb
       // TODO: Calculate normals (cross product).
       // TODO: Calculate UV coordinates. Check for correctness.
 
-      vertices.push(point.x, point.y, point.z, point.x, point.y, point.z, segment / segments, 1 - pt / points.length)
+      if (cap) {
+        vertices.push(point.x, point.y, point.z, point.x, point.y, point.z, segment / segments, (pt + 1) / (points.length + 1))
+      } else {
+        vertices.push(point.x, point.y, point.z, point.x, point.y, point.z, segment / segments, pt / (points.length - 1))
+      }
     }
   }
 
   // Add indices.
-  for (let segment = 0; segment < segments - 1; segment++) {
+  for (let segment = 0; segment < segments; segment++) {
     for (let pt = 0; pt < points.length - 1; pt++) {
       const v0 = segment * points.length + pt
       const v1 = segment * points.length + pt + 1
@@ -62,19 +66,6 @@ export function revolutionBody (points: Vector2[], axis: Vector3, segments: numb
         v2, v3, v0
       )
     }
-  }
-
-  // Cap edges.
-  for (let pt = 0; pt < points.length - 1; pt++) {
-    const v0 = pt
-    const v1 = pt + 1
-    const v2 = (segments - 1) * points.length + pt + 1
-    const v3 = (segments - 1) * points.length + pt
-
-    indices.push(
-      v0, v1, v2,
-      v2, v3, v0
-    )
   }
 
   // Cap top and bottom.
@@ -98,36 +89,26 @@ export function revolutionBody (points: Vector2[], axis: Vector3, segments: numb
     const normal = new Vector3(0, 1, 0).multiply(axis)
 
     // Top triangles.
-    vertices.push(topVertex.x, topVertex.y, topVertex.z, normal.x, normal.y, normal.z, 0, 1)
-    for (let segment = 0; segment < segments - 1; segment++) {
+    vertices.push(topVertex.x, topVertex.y, topVertex.z, normal.x, normal.y, normal.z, 0, 0)
+    for (let segment = 0; segment < segments; segment++) {
       const v0 = segment * points.length
       const v1 = (segment + 1) * points.length
-      const v2 = segments * points.length
-      indices.push(v0, v1, v2)
-    }
 
-    // Cap edges.
-    {
-      const v0 = (segments - 1) * points.length
-      const v1 = 0
-      const v2 = segments * points.length
+      // Top vertex.
+      const v2 = (segments + 1) * points.length
+
       indices.push(v0, v1, v2)
     }
 
     // Bottom trianges.
-    vertices.push(bottomVertex.x, bottomVertex.y, bottomVertex.z, -normal.x, -normal.y, -normal.z, 0, 0)
-    for (let segment = 0; segment < segments - 1; segment++) {
+    vertices.push(bottomVertex.x, bottomVertex.y, bottomVertex.z, -normal.x, -normal.y, -normal.z, 0, 1)
+    for (let segment = 0; segment < segments; segment++) {
       const v0 = (segment + 1) * points.length - 1
       const v1 = (segment + 2) * points.length - 1
-      const v2 = segments * points.length + 1
-      indices.push(v0, v1, v2)
-    }
 
-    // Cap edges.
-    {
-      const v0 = segments * points.length - 1
-      const v1 = points.length - 1
-      const v2 = segments * points.length + 1
+      // Bottom vertex.
+      const v2 = (segments + 1) * points.length + 1
+
       indices.push(v0, v1, v2)
     }
   }
