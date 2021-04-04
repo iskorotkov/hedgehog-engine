@@ -40,9 +40,6 @@ void main()
     vec3 lightVector = ${light} - v_position;
     vec3 lightDirection = normalize(lightVector);
 
-    float lightDistance = length(lightVector);
-    float attenuation = 1.0 / pow(lightDistance, 2.0);
-
     float diffuseStrength = max(dot(normals, lightDirection), 0.01);
 
     vec3 e = normalize(E - v_position);
@@ -54,9 +51,13 @@ void main()
 
     // Gamma correction.
     // More info: https://learnopengl.com/Advanced-Lighting/Gamma-Correction
-    diffuseStrength = normalize(attenuation * diffuseStrength);
-    specularStrength = normalize(attenuation * specularStrength);
     vec4 linearColor = vec4(diffuseColor.xyz * diffuseStrength + specularColor.xyz * specularStrength, 1.0);
+
+    // Attenuation.
+    float lightDistance = length(lightVector);
+    float attenuation = 1.0 / pow(lightDistance, 2.0);
+    diffuseStrength = attenuation * diffuseStrength;
+    specularStrength = attenuation * specularStrength;
 
     gl_FragColor = pow(linearColor, vec4(1.0 / gamma));
 }

@@ -99,7 +99,7 @@ export class CompiledProgram3D implements CompiledProgram {
 
     gl.activeTexture(gl.TEXTURE0 + 1)
     gl.bindTexture(gl.TEXTURE_2D, this.specularTexture.load(gl))
-    gl.uniform1i(this.diffuseTexBuffer, 1)
+    gl.uniform1i(this.specularTexBuffer, 1)
 
     gl.drawElements(gl.TRIANGLES, actor.model.indexCount, gl.UNSIGNED_SHORT, 0)
   }

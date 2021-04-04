@@ -16,6 +16,7 @@ import { Keyboard } from './input/keyboard'
 
 const keyboard = new Keyboard()
 
+// TODO: When moving on editor screen, new points appear in wrong coordinates.
 const cameraPosition = new Vector3(0, 0, 10)
 const movementSpeed = 1
 
@@ -29,6 +30,7 @@ keyboard.addEventListener('KeyS', () => {
   compose()
 })
 
+// TODO: Rotate camera, not shape (light must keep its position relative to shape).
 const shapeRotation = new Vector3(0, 0, 0)
 const rotationSpeed = 15
 
@@ -73,7 +75,7 @@ function compose () {
     new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
     new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
     vertexShader,
-    fragmentShader(new Vector3(0, 0, 0), camera.view(), 1_000_000)
+    fragmentShader(new Vector3(0, 0, 0), camera.view(), 20)
   )
 
   const squares = new Actor(
@@ -81,7 +83,7 @@ function compose () {
     new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
     new Program2D(new Texture('', new Vector4(255, 0, 0, 255)), new Texture('')),
     vertexShader,
-    fragmentShader(new Vector3(0, 0, 0), camera.view(), 1_000_000)
+    fragmentShader(new Vector3(0, 0, 0), camera.view(), 20)
   )
 
   const shape = new Actor(
@@ -89,7 +91,7 @@ function compose () {
     new Transform(new Vector3(0, 0, 0), shapeRotation, new Vector3(1, 1, 1)),
     new Program3D(new Texture('', new Vector4(255, 0, 0, 255)), new Texture('')),
     vertexShader,
-    fragmentShader(new Vector3(0, 0, 0), camera.view(), 1_000_000)
+    fragmentShader(new Vector3(4, 4, 4), camera.view(), 20)
   )
 
   engine.compose([curve, squares, shape])
