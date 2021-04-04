@@ -13,6 +13,8 @@ import { PointsModel } from './engine/models/pointsModel'
 import { Program2D } from './engine/programs/program2d'
 import { Program3D } from './engine/programs/program3d'
 import { Keyboard } from './input/keyboard'
+import { PerspectiveProjectionCamera } from './engine/camera/perspectiveProjectionCamera'
+import { degrees } from './math/angle'
 
 const keyboard = new Keyboard()
 
@@ -53,13 +55,35 @@ mouse.addEventListener(pos => {
   compose()
 })
 
-const box: BoundingBox = { near: 0.001, far: 100, left: -6.4, right: 6.4, bottom: -4.8, top: 4.8 }
+let aspectRatio = 16 / 9
+
+const canvas = document.getElementById('canvas') as HTMLCanvasElement
+if (canvas) {
+  aspectRatio = canvas.width / canvas.height
+}
+
+const boxSize = 5
+const box: BoundingBox = {
+  near: 0.001,
+  far: 100,
+  left: -boxSize * aspectRatio,
+  right: boxSize * aspectRatio,
+  bottom: -boxSize,
+  top: boxSize
+}
+
 const cameraTransform = new Transform(cameraPosition, new Vector3(0, 0, 0), new Vector3(1, 1, 1))
-
-// Switch cameras.
-
 const parallelCamera = new ParallelProjectionCamera(cameraTransform, box)
 
+const perspectiveCamera = new PerspectiveProjectionCamera(cameraTransform, {
+  viewAngle: degrees(75),
+  // TODO: Get rid of multiplication by 0.5 when calculating aspect ratio for perspective projection.
+  aspectRatio: 0.5 * aspectRatio,
+  near: 0.001,
+  far: 100
+})
+
+// Switch cameras.
 let activeCamera: 'parallel' | 'perspective' = 'parallel'
 keyboard.addEventListener('KeyC', () => {
   activeCamera = activeCamera === 'parallel' ? 'perspective' : 'parallel'
@@ -67,7 +91,7 @@ keyboard.addEventListener('KeyC', () => {
   if (activeCamera === 'parallel') {
     renderer.camera = parallelCamera
   } else {
-    console.log('Perspective camera not implemented')
+    renderer.camera = perspectiveCamera
   }
 })
 
