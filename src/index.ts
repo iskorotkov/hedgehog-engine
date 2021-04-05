@@ -15,6 +15,7 @@ import { Program3D } from './engine/programs/program3d'
 import { Keyboard } from './input/keyboard'
 import { PerspectiveProjectionCamera } from './engine/camera/perspectiveProjectionCamera'
 import { degrees } from './math/angle'
+import { keepColorShader } from './engine/shaders/fragment/keepColorShader'
 
 const keyboard = new Keyboard()
 
@@ -162,19 +163,19 @@ const distance = 0.0001
  */
 function compose () {
   const curve = new Actor(
-    bezierCurveModel.bezierCurveAsLines(tolerance, distance, 0.05),
+    bezierCurveModel.bezierCurveAsLines(tolerance, distance, 0.01),
     new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
     new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
     vertexShader,
-    fragmentShader(new Vector3(0, 0, 0), parallelCamera.view(), 20)
+    keepColorShader
   )
 
   const squares = new Actor(
     bezierCurveModel.squares(0.05),
     new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
-    new Program2D(new Texture('', new Vector4(255, 0, 0, 255)), new Texture('')),
+    new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
     vertexShader,
-    fragmentShader(new Vector3(0, 0, 0), parallelCamera.view(), 20)
+    keepColorShader
   )
 
   const shape = new Actor(
