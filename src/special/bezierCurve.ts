@@ -41,8 +41,12 @@ function getPointsOnBezierCurveWithSplitting (points: Vector2[], firstPoint: num
   const outPoints = newPoints || []
 
   if (flatness(points, firstPoint) < tolerance) {
-    // just add the end points of this curve
-    outPoints.push(points[firstPoint + 0] ?? new Vector2(0, 0))
+    // Add start point of the curve.
+    if (outPoints.length === 0) {
+      outPoints.push(points[firstPoint + 0] ?? new Vector2(0, 0))
+    }
+
+    // Add end point of the curve.
     outPoints.push(points[firstPoint + 3] ?? new Vector2(0, 0))
   } else {
     const lerp = (v1: Vector2, v2: Vector2, alpha: number) => {
@@ -132,8 +136,13 @@ function simplifyPoints (points: Vector2[], start: number, end: number, epsilon:
     simplifyPoints(points, start, maxNdx + 1, epsilon, outPoints)
     simplifyPoints(points, maxNdx, end, epsilon, outPoints)
   } else {
-    // add the 2 end points
-    outPoints.push(s, e)
+    // Add start point of the curve.
+    if (outPoints.length === 0) {
+      outPoints.push(s)
+    }
+
+    // Add end point of the curve.
+    outPoints.push(e)
   }
 
   return outPoints
