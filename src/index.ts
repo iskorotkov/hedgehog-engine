@@ -40,6 +40,18 @@ keyboard.addEventListener('KeyF', () => {
   cameraPosition.z += movementSpeed
 })
 
+let showShape = true
+keyboard.addEventListener('KeyV', () => {
+  showShape = !showShape
+  compose()
+})
+
+let showBezierCurve = true
+keyboard.addEventListener('KeyB', () => {
+  showBezierCurve = !showBezierCurve
+  compose()
+})
+
 // TODO: Rotate camera, not shape (light must keep its position relative to shape).
 const shapeRotation = new Vector3(0, 0, 0)
 const rotationSpeed = 15
@@ -147,7 +159,17 @@ function compose () {
     fragmentShader(new Vector3(4, 4, 4), parallelCamera.view(), 20)
   )
 
-  engine.compose([curve, squares, shape])
+  const actorsToDraw = []
+
+  if (showBezierCurve) {
+    actorsToDraw.push(curve, squares)
+  }
+
+  if (showShape) {
+    actorsToDraw.push(shape)
+  }
+
+  engine.compose(actorsToDraw)
 }
 
 /**
