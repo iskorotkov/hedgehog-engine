@@ -18,7 +18,6 @@ import { degrees } from './math/angle'
 
 const keyboard = new Keyboard()
 
-// TODO: When moving on editor screen, new points appear in wrong coordinates.
 const cameraPosition = new Vector3(0, 0, 10)
 const movementSpeed = 1
 
