@@ -15,11 +15,18 @@ export class PointsModel {
       this.points.push(p)
     }
 
-    removePoint (p: Vector2) {
-      const index = this.points.lastIndexOf(p)
-      if (index >= 0) {
-        this.points = this.points.splice(index, 1)
+    removePoint (p: Vector2 | number) {
+      const index = typeof p === 'number' ? p : this.points.lastIndexOf(p)
+
+      if (p < 0 || p >= this.points.length) {
+        return
       }
+
+      this.points.splice(index, 1)
+    }
+
+    getPoints () {
+      return this.points
     }
 
     bezierCurveAsSquares (tolerance: number, distance: number, size: number) {

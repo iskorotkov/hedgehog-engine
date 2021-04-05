@@ -1,5 +1,5 @@
 import { Engine } from './engine/engine'
-import { Vector3, Vector4 } from './math/vector'
+import { Vector2, Vector3, Vector4 } from './math/vector'
 import { VolumetricRenderer } from './engine/renderer/volumetricRenderer'
 import { ParallelProjectionCamera } from './engine/camera/parallelProjectionCamera'
 import { Transform } from './engine/world/transform'
@@ -64,6 +64,8 @@ keyboard.addEventListener('KeyD', () => {
   shapeRotation.y -= rotationSpeed
 })
 
+const minDistanceBetweenPoints = 0.2
+
 const mouse = new Mouse('canvas')
 mouse.addEventListener(pos => {
   // Scale positions.
@@ -76,7 +78,13 @@ mouse.addEventListener(pos => {
   // Mirror positions along X axis.
   pos.x = Math.abs(pos.x)
 
-  bezierCurveModel.addPoint(pos)
+  const closePoints = bezierCurveModel.getPoints().filter(p => pos.subtract(p).size() < minDistanceBetweenPoints)
+
+  if (closePoints.length > 0) {
+    bezierCurveModel.removePoint(closePoints[0] ?? new Vector2(0, 0))
+  } else {
+    bezierCurveModel.addPoint(pos)
+  }
 
   compose()
 })
