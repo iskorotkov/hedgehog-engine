@@ -22,12 +22,8 @@ function pointsOnShape (points: Vector2[], axis: Vector3, segments: number) {
   return shapePoints
 }
 
-function calculateUV (nPoints: number, nSegments: number, point: number, segment: number, cap: boolean): Vector2 {
-  if (cap) {
-    return new Vector2(segment / nSegments, (point + 1) / (nPoints + 1))
-  } else {
-    return new Vector2(segment / nSegments, point / (nPoints - 1))
-  }
+function calculateUV (nPoints: number, nSegments: number, point: number, segment: number): Vector2 {
+  return new Vector2(segment / nSegments, point / (nPoints - 1))
 }
 
 function calculateNormals (points: Vector3[], nSegments: number, point: number, segment: number): Vector3 {
@@ -85,7 +81,7 @@ export function revolutionBody (points: Vector2[], axis: Vector3, nSegments: num
         throw Error()
       }
 
-      const uv = calculateUV(points.length, nSegments, pt, segment, cap)
+      const uv = calculateUV(points.length, nSegments, pt, segment)
       const normal = calculateNormals(shape, nSegments, pt, segment)
 
       vertices.push(
