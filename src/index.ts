@@ -162,37 +162,56 @@ const distance = 0.0001
  * Create and compose the scene.
  */
 function compose () {
-  const curve = new Actor(
-    bezierCurveModel.bezierCurveAsLines(tolerance, distance, 0.01),
-    new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
-    new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
-    vertexShader,
-    keepColorShader
-  )
-
-  const squares = new Actor(
-    bezierCurveModel.squares(0.05),
-    new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
-    new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
-    vertexShader,
-    keepColorShader
-  )
-
-  const shape = new Actor(
-    bezierCurveModel.revolutionBody(tolerance, distance, new Vector3(0, 1, 0), 24, true),
-    new Transform(new Vector3(0, 0, 0), shapeRotation, new Vector3(1, 1, 1)),
-    new Program3D(shapeDiffuseTexture, new Texture('')),
-    vertexShader,
-    fragmentShader(lightPosition, parallelCamera.view(), 20)
-  )
-
   const actorsToDraw = []
 
   if (showBezierCurve) {
-    actorsToDraw.push(curve, squares)
+    const curve = new Actor(
+      bezierCurveModel.bezierCurveAsLines(tolerance, distance, 0.01),
+      new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
+      new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
+      vertexShader,
+      keepColorShader
+    )
+
+    const squares = new Actor(
+      bezierCurveModel.squares(0.05),
+      new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
+      new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
+      vertexShader,
+      keepColorShader
+    )
+
+    const mirroredPoints = bezierCurveModel.getPoints().map(p => new Vector2(-p.x, p.y))
+    const mirroredBezierCurveModel = new PointsModel(mirroredPoints)
+
+    const mirroredCurve = new Actor(
+      mirroredBezierCurveModel.bezierCurveAsLines(tolerance, distance, 0.01),
+      new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
+      new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
+      vertexShader,
+      keepColorShader
+    )
+
+    const mirroredSquares = new Actor(
+      mirroredBezierCurveModel.squares(0.05),
+      new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
+      new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
+      vertexShader,
+      keepColorShader
+    )
+
+    actorsToDraw.push(curve, squares, mirroredCurve, mirroredSquares)
   }
 
   if (showShape) {
+    const shape = new Actor(
+      bezierCurveModel.revolutionBody(tolerance, distance, new Vector3(0, 1, 0), 24, true),
+      new Transform(new Vector3(0, 0, 0), shapeRotation, new Vector3(1, 1, 1)),
+      new Program3D(shapeDiffuseTexture, new Texture('')),
+      vertexShader,
+      fragmentShader(lightPosition, parallelCamera.view(), 20)
+    )
+
     actorsToDraw.push(shape)
   }
 
