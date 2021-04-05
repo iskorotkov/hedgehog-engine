@@ -29,6 +29,17 @@ keyboard.addEventListener('KeyS', () => {
   cameraPosition.y -= movementSpeed
 })
 
+keyboard.addEventListener('KeyR', () => {
+  cameraPosition.z -= movementSpeed
+  if (cameraPosition.z < 1) {
+    cameraPosition.z = 1
+  }
+})
+
+keyboard.addEventListener('KeyF', () => {
+  cameraPosition.z += movementSpeed
+})
+
 // TODO: Rotate camera, not shape (light must keep its position relative to shape).
 const shapeRotation = new Vector3(0, 0, 0)
 const rotationSpeed = 15
