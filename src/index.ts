@@ -111,8 +111,8 @@ const parallelCamera = new ParallelProjectionCamera(cameraTransform, box)
 
 const perspectiveCamera = new PerspectiveProjectionCamera(cameraTransform, {
   viewAngle: degrees(60),
-  // TODO: Get rid of multiplication by 0.5 when calculating aspect ratio for perspective projection.
-  aspectRatio: 0.5 * aspectRatio,
+  // TODO: Get rid of (1 / (aspect ratio)) for perspective projection.
+  aspectRatio: 1 / aspectRatio,
   near: 0.001,
   far: 100
 })
