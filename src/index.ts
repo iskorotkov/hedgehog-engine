@@ -18,7 +18,7 @@ import { degrees } from './math/angle'
 
 const keyboard = new Keyboard()
 
-const cameraPosition = new Vector3(0, 0, 10)
+const cameraPosition = new Vector3(0, 0, 20)
 const movementSpeed = 1
 
 keyboard.addEventListener('KeyW', () => {
@@ -64,31 +64,6 @@ keyboard.addEventListener('KeyD', () => {
   shapeRotation.y -= rotationSpeed
 })
 
-const minDistanceBetweenPoints = 0.2
-
-const mouse = new Mouse('canvas')
-mouse.addEventListener(pos => {
-  // Scale positions.
-  pos.x *= (box.right - box.left) / 2
-  pos.y *= (box.top - box.bottom) / 2
-
-  // Negate camera offset.
-  pos.y += cameraPosition.y
-
-  // Mirror positions along X axis.
-  pos.x = Math.abs(pos.x)
-
-  const closePoints = bezierCurveModel.getPoints().filter(p => pos.subtract(p).size() < minDistanceBetweenPoints)
-
-  if (closePoints.length > 0) {
-    bezierCurveModel.removePoint(closePoints[0] ?? new Vector2(0, 0))
-  } else {
-    bezierCurveModel.addPoint(pos)
-  }
-
-  compose()
-})
-
 let aspectRatio = 16 / 9
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
@@ -127,6 +102,35 @@ keyboard.addEventListener('KeyC', () => {
   } else {
     renderer.camera = perspectiveCamera
   }
+})
+
+const minDistanceBetweenPoints = 0.2
+
+const mouse = new Mouse('canvas')
+mouse.addEventListener(pos => {
+  if (activeCamera !== 'parallel') {
+    return
+  }
+
+  // Scale positions.
+  pos.x *= (box.right - box.left) / 2
+  pos.y *= (box.top - box.bottom) / 2
+
+  // Negate camera offset.
+  pos.y += cameraPosition.y
+
+  // Mirror positions along X axis.
+  pos.x = Math.abs(pos.x)
+
+  const closePoints = bezierCurveModel.getPoints().filter(p => pos.subtract(p).size() < minDistanceBetweenPoints)
+
+  if (closePoints.length > 0) {
+    bezierCurveModel.removePoint(closePoints[0] ?? new Vector2(0, 0))
+  } else {
+    bezierCurveModel.addPoint(pos)
+  }
+
+  compose()
 })
 
 const renderer = new VolumetricRenderer(parallelCamera, new Vector3(0.5, 0.5, 0.5))
