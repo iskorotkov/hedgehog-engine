@@ -116,12 +116,15 @@ const bezierCurveModel = new PointsModel()
 
 const shapeDiffuseTexture = new Texture('./resources/textures/frog.jpg', new Vector4(255, 0, 0, 255))
 
+const tolerance = 0.0001
+const distance = 0.0001
+
 /**
  * Create and compose the scene.
  */
 function compose () {
   const curve = new Actor(
-    bezierCurveModel.bezierCurveAsLines(0.01, 0.01, 0.05),
+    bezierCurveModel.bezierCurveAsLines(tolerance, distance, 0.05),
     new Transform(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1)),
     new Program2D(new Texture('', new Vector4(0, 0, 255, 255)), new Texture('')),
     vertexShader,
@@ -137,7 +140,7 @@ function compose () {
   )
 
   const shape = new Actor(
-    bezierCurveModel.revolutionBody(0.01, 0.01, new Vector3(0, 1, 0), 10, true),
+    bezierCurveModel.revolutionBody(tolerance, distance, new Vector3(0, 1, 0), 10, true),
     new Transform(new Vector3(0, 0, 0), shapeRotation, new Vector3(1, 1, 1)),
     new Program3D(shapeDiffuseTexture, new Texture('')),
     vertexShader,
