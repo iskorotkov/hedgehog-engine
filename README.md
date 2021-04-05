@@ -33,6 +33,13 @@ Open `index.html` file in the browser.
 - different models to draw
 - widgets for editing scene without reloading
 - interchangeable cameras
+- 2D and 3D graphics
+- gamma correction and light attenuation
+- mic recording
+- mouse input support (clicks only)
+- keyboard input support (key downs only)
+- Bezier curves
+- revolution body drawing
 
 ## Tech stack
 
@@ -60,3 +67,4 @@ Use linters before committing to this repo.
 - [OpenGL matrices](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/)
 - [Water waves function](https://www.wolframalpha.com/input/?i=graph+0.2*cos%284*%28x*x%2Bz*z%29%29*exp%280.1*%28x*x%2Bz*z%29%29)
 - [Water waves function derivative](https://www.wolframalpha.com/input/?i=derivative+y-a*cos%28b*%28x*x%2Bz*z%29%29*exp%28c*%28x*x%2Bz*z%29%29)
+- [Gamma correction](https://learnopengl.com/Advanced-Lighting/Gamma-Correction)
