@@ -152,11 +152,11 @@ function compose () {
   )
 
   const shape = new Actor(
-    bezierCurveModel.revolutionBody(tolerance, distance, new Vector3(0, 1, 0), 10, true),
+    bezierCurveModel.revolutionBody(tolerance, distance, new Vector3(0, 1, 0), 24, true),
     new Transform(new Vector3(0, 0, 0), shapeRotation, new Vector3(1, 1, 1)),
     new Program3D(shapeDiffuseTexture, new Texture('')),
     vertexShader,
-    fragmentShader(new Vector3(4, 4, 4), parallelCamera.view(), 20)
+    fragmentShader(new Vector3(0, 10, 0), parallelCamera.view(), 20)
   )
 
   const actorsToDraw = []
