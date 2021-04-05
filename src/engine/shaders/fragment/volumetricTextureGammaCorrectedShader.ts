@@ -52,13 +52,6 @@ void main()
     // Gamma correction.
     // More info: https://learnopengl.com/Advanced-Lighting/Gamma-Correction
     vec4 linearColor = vec4(diffuseColor.xyz * diffuseStrength + specularColor.xyz * specularStrength, 1.0);
-
-    // Attenuation.
-    float lightDistance = length(lightVector);
-    float attenuation = 1.0 / pow(lightDistance, 2.0);
-    diffuseStrength = attenuation * diffuseStrength;
-    specularStrength = attenuation * specularStrength;
-
     gl_FragColor = pow(linearColor, vec4(1.0 / gamma));
 }
 `.trim())

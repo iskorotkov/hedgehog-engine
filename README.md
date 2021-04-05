@@ -34,7 +34,7 @@ Open `index.html` file in the browser.
 - widgets for editing scene without reloading
 - interchangeable cameras
 - 2D and 3D graphics
-- gamma correction and light attenuation
+- gamma correction
 - mic recording
 - mouse input support (clicks only)
 - keyboard input support (key downs only)
