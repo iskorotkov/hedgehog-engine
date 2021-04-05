@@ -48,8 +48,12 @@ mouse.addEventListener(pos => {
   pos.x *= (box.right - box.left) / 2
   pos.y *= (box.top - box.bottom) / 2
 
+  // Negate camera offset.
+  pos.y += cameraPosition.y
+
   // Mirror positions along X axis.
   pos.x = Math.abs(pos.x)
+
   bezierCurveModel.addPoint(pos)
 
   compose()
@@ -76,7 +80,7 @@ const cameraTransform = new Transform(cameraPosition, new Vector3(0, 0, 0), new 
 const parallelCamera = new ParallelProjectionCamera(cameraTransform, box)
 
 const perspectiveCamera = new PerspectiveProjectionCamera(cameraTransform, {
-  viewAngle: degrees(75),
+  viewAngle: degrees(60),
   // TODO: Get rid of multiplication by 0.5 when calculating aspect ratio for perspective projection.
   aspectRatio: 0.5 * aspectRatio,
   near: 0.001,
