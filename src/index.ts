@@ -3,7 +3,7 @@ import { Vector2, Vector3, Vector4 } from './math/vector'
 import { VolumetricRenderer } from './engine/renderer/volumetricRenderer'
 import { ParallelProjectionCamera } from './engine/camera/parallelProjectionCamera'
 import { Transform } from './engine/world/transform'
-import { BoundingBox } from './math/matrix'
+import { BoundingBox, rotate, translate } from './math/matrix'
 import { Actor } from './engine/world/actor'
 import { Texture } from './assets/texture'
 import { volumetricTextureGammaCorrectedShader as fragmentShader } from './engine/shaders/fragment/volumetricTextureGammaCorrectedShader'
@@ -19,25 +19,14 @@ import { degrees } from './math/angle'
 const keyboard = new Keyboard()
 
 const cameraPosition = new Vector3(0, 0, 20)
-const movementSpeed = 1
+const cameraMovementSpeed = 1
 
 keyboard.addEventListener('KeyW', () => {
-  cameraPosition.y += movementSpeed
+  cameraPosition.y += cameraMovementSpeed
 })
 
 keyboard.addEventListener('KeyS', () => {
-  cameraPosition.y -= movementSpeed
-})
-
-keyboard.addEventListener('KeyR', () => {
-  cameraPosition.z -= movementSpeed
-  if (cameraPosition.z < 1) {
-    cameraPosition.z = 1
-  }
-})
-
-keyboard.addEventListener('KeyF', () => {
-  cameraPosition.z += movementSpeed
+  cameraPosition.y -= cameraMovementSpeed
 })
 
 let showShape = true
@@ -104,6 +93,31 @@ keyboard.addEventListener('KeyC', () => {
   }
 })
 
+const orbitDegrees = 15
+const orbitAxis = new Vector3(0, 1, 0)
+
+let lightPosition = new Vector3(50, 10, 0)
+keyboard.addEventListener('KeyE', () => {
+  lightPosition = rotate(orbitAxis, degrees(orbitDegrees)).multiply(translate(lightPosition)).toPosition()
+  compose()
+})
+
+keyboard.addEventListener('KeyQ', () => {
+  lightPosition = rotate(orbitAxis, degrees(-orbitDegrees)).multiply(translate(lightPosition)).toPosition()
+  compose()
+})
+
+const lightMovementSpeed = 1
+keyboard.addEventListener('KeyR', () => {
+  lightPosition.y += lightMovementSpeed
+  compose()
+})
+
+keyboard.addEventListener('KeyF', () => {
+  lightPosition.y -= lightMovementSpeed
+  compose()
+})
+
 const minDistanceBetweenPoints = 0.2
 
 const mouse = new Mouse('canvas')
@@ -168,7 +182,7 @@ function compose () {
     new Transform(new Vector3(0, 0, 0), shapeRotation, new Vector3(1, 1, 1)),
     new Program3D(shapeDiffuseTexture, new Texture('')),
     vertexShader,
-    fragmentShader(new Vector3(0, 10, 0), parallelCamera.view(), 20)
+    fragmentShader(lightPosition, parallelCamera.view(), 20)
   )
 
   const actorsToDraw = []
