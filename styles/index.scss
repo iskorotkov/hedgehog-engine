@@ -4,15 +4,22 @@
   margin: 0.2em;
 }
 
+// Document
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: #333;
+}
+
 // Main
 
 main {
-  display: flex;
-  flex-flow: row wrap;
-
-  > * {
-    flex: 1;
-  }
+  text-align: center;
 }
 
 // Canvas
@@ -39,4 +46,14 @@ input {
 // stylelint-disable-next-line selector-no-qualifying-type
 input[type='number'] {
   width: 5em;
+}
+
+// Controls
+
+.controls {
+  text-align: start;
+}
+
+.controls-item {
+  color: #fff;
 }

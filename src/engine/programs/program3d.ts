@@ -69,15 +69,6 @@ export class CompiledProgram3D implements CompiledProgram {
     const mvp = p.multiply(mv)
     const n = mv.toMatrix3().inverse().transpose()
 
-    console.info('matrices:', {
-      model: m,
-      view: v,
-      projection: p,
-      modelView: mv,
-      modelViewProjection: mvp,
-      normals: n
-    })
-
     gl.useProgram(this.program)
 
     gl.bindBuffer(gl.ARRAY_BUFFER, actor.model.vertices)
@@ -108,7 +99,7 @@ export class CompiledProgram3D implements CompiledProgram {
 
     gl.activeTexture(gl.TEXTURE0 + 1)
     gl.bindTexture(gl.TEXTURE_2D, this.specularTexture.load(gl))
-    gl.uniform1i(this.diffuseTexBuffer, 1)
+    gl.uniform1i(this.specularTexBuffer, 1)
 
     gl.drawElements(gl.TRIANGLES, actor.model.indexCount, gl.UNSIGNED_SHORT, 0)
   }
